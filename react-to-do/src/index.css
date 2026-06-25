@@ -9,8 +9,15 @@
   --color-white: #ffffff;
   --color-dark: #0f127a;
   --color-muted: #64748b;
+  --color-undeline: #F24E1E;
+  --color-card-selected: #A1A3AB;
   --text: #6b6375;
   --text-h: #08060d;
+  --text-card-header: #000000;
+  --text-card: #747474;
+  --text-card-created: #A1A3AB;
+  --text-card-in-progress: #0225FF;
+  --text-card-moderate-prio: #02c4ff;
 
   --bg: #FF6767;
   --bg-secondary: #F5F8FF;
