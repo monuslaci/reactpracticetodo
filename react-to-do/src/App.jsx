@@ -6,6 +6,7 @@ import './App.css'
 import { Routes, Route, Link, useLocation } from "react-router-dom";
 import NavBar from "./components/NavBar.jsx";
 import Dashboard from './pages/Dashboard.jsx'
+import Test from './pages/Test.jsx'
 
 function App() {
   const location = useLocation();
@@ -24,6 +25,7 @@ function App() {
     
           <Routes>
           <Route path="/dashboard" element={<Dashboard />} />
+           <Route path="/test" element={<Test />} />
 
         </Routes>
 

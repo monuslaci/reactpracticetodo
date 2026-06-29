@@ -6,7 +6,7 @@ import { FaTachometerAlt , FaExclamation, FaTasks, FaCog, FaQuestionCircle, FaSi
 export default function LeftNavBar() {
 
 return(
-    <>
+    <div className='lg:block hidden'>
     <div className="navbartop h-[33px] pr-0 ml-0  bg-[var(--bg-secondary)]">      
     </div>
     
@@ -75,7 +75,7 @@ return(
 
 
     </div>
-                    </>
+                    </div>
     );
 
 }

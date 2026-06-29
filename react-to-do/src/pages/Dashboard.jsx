@@ -22,10 +22,15 @@ export default function Dashboard() {
             </div>
 
             <div className="content display flex w-full h-[911px] h-screen bg-[var(--bg-secondary)] rounded shadow ">
-                
+
                 <LeftNavBar />
-                <MyTasks />  
-                <TaskDetail />
+
+                
+            <div className="md:flex-row flex flex-col">
+                    <MyTasks />  
+                    <TaskDetail />
+            </div>
+
             </div>
         </div>
 
