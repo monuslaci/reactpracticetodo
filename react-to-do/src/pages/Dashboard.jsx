@@ -1,38 +1,61 @@
-import React, { useState, useEffect } from "react";
-
+import React from 'react'
 import LeftNavBar from './../components/LeftNavBar.jsx'
-import Card from "./../components/Card.jsx";
-import MyTasks from "../components/MyTasks.jsx";
-import TaskDetail from "../components/TaskDetail.jsx";
 
-export default function Dashboard() {
-
-
-
+const Dashboard = () => {
     return (
-        <div className="dashboard flex flex-col items-center justify-center  w-full h-screen bg-[var(--bg-secondary)] overflow-y-auto" >
-         
-            <div className="toppart bg-[var(--code-bg)] w-full h-[100px] flex items-center justify-between px-4 md:px-8 py-4 rounded shadow">
-                <div className="searchbar">
-                    <input type="text" placeholder="Search..." />
-                </div>              
-                <div className="filter">
-                    <button>Filter</button>
+        <div className='flex h-screen overflow-hidden'>
+            {/* ** Sidebar */}
+            <LeftNavBar />
+
+            {/* Dashboard Layout */}
+            <div className='flex-1 overflow-y-auto'>
+                <div className='mx-auto w-full max-w-277.75 px-4'>
+
+                    {/* ** Search Section */}
+                    <div className='flex h-14 my-8 items-center justify-between'>
+
+                        {/* Search Input Field */}
+                        <input className='h-8 px-4 bg-amber-100' placeholder='Search Something' />
+
+                        {/* Icons */}
+                        <div>Icons</div>
+
+                    </div>
+
+                    {/* Keep in touch  */}
+
+                    <div>
+                        <h1>Keep in touch</h1>
+
+                        <div className='flex gap-4 my-5'>
+                            {/* BOX */}
+                            {
+                                [1, 2, 3, 4].map((item, index) => (
+                                    <div className='flex-1 h-37.5 bg-amber-300 '>BOX {index}</div>
+
+                                ))
+                            }
+
+                        </div>
+                    </div>
+
+                    {/* Charts  */}
+                    <div className='flex sm:flex-row flex-col gap-2.5 my-7.5 h-auto sm:h-122.5'>
+                        <div className='w-full  h-62.5 sm:h-full  bg-amber-100' >Big Chart</div>
+                        <div className='w-full sm:w-12/19 h-62.5 sm:h-full bg-amber-100'>Small Chart</div>
+                    </div>
+
+                    <div className='h-82.5 bg-amber-100 mb-6'>Table</div>
+
+
+
                 </div>
-            </div>
-
-            <div className="content display flex w-full h-[911px] h-screen bg-[var(--bg-secondary)] rounded shadow ">
-
-                <LeftNavBar />
-
-                
-            <div className="md:flex-row flex flex-col">
-                    <MyTasks />  
-                    <TaskDetail />
-            </div>
 
             </div>
+
+
         </div>
-
-    );
+    )
 }
+
+export default Dashboard

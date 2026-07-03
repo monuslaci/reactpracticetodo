@@ -1,81 +1,94 @@
 import React, { useState, useEffect } from "react";
-import { FaTachometerAlt , FaExclamation, FaTasks, FaCog, FaQuestionCircle, FaSignOutAlt  } from "react-icons/fa";
+import { FaTachometerAlt , FaExclamation, FaTasks, FaCog, FaQuestionCircle, FaSignOutAlt, FaUsers, FaEnvelope, FaCalendarAlt, FaChartBar, FaLifeRing, FaFolder   } from "react-icons/fa";
 
 
 
 export default function LeftNavBar() {
 
 return(
-    <div className='lg:block hidden'>
-    <div className="navbartop h-[33px] pr-0 ml-0  bg-[var(--bg-secondary)]">      
-    </div>
-    
-    <div className="navbarlinks flex-1 flex-col relative h-[831px] pr-0 ml-0  bg-[var(--bg)] rounded shadow h-full ">
-            <img src="/user.png" className="absolute  left-1/2 top-0  -translate-x-1/2  -translate-y-1/2 w-17 h-17  rounded-full  border-1  border-white object-cover" />    
-            <div className="navbarcontent flex flex-col">
-                    <div className="navbaruserdetails flex flex-col items-center justify-center  mt-[40px] mr-[20px] ml-[20px]">
-                            <div className="name w-full flex items-center justify-center text-md text-[var(--color-white)]">
-                                John Doe
-                            </div> 
-                            <div className="name w-full flex items-center justify-center text-[12px] text-[var(--color-white)]">
-                                johndoe@gmail.com
-                            </div> 
-                        </div>
+            <div className="hidden md:flex flex-col items-center h-screen w-73.25 bg-[#F6F5F8] text-[16px]  font-[var(--font-menu)]">
+                <div className="flex flex-col text-left w-[86.35%] bg-[#bff05d] " >
 
-                        <div className="navbarlinks flex flex-col items-center justify-center gap-4 mt-[30px] mr-[20px] ml-[20px]">
-                            <div className="link w-full h-[50px] bg-[var(--bg-secondary)] rounded  flex items-center justify-start text-[var(--bg)]">
-                                <div className="content flex p-2">
-                                    <FaTachometerAlt className="mr-2 mt-[5px]" />
-                                    Dashboard
-                                </div>
-
-                            </div> 
-        
-                            <div className="link w-full h-[50px]  rounded  flex items-center justify-start text-[var(--color-white)]">
-                                    <div className="content flex p-2">
-                                        <FaExclamation className="mr-2 mt-[5px]" />
-                                        Vital Tasks
-                                    </div>
-                            </div>
-
-                            <div className="link w-full h-[50px] rounded  flex items-center justify-start text-[var(--color-white)]">
-                                <div className="content flex p-2">
-                                    <FaTasks className="mr-2 mt-[5px]" />
-                                    My Tasks
-                                </div>
-                            </div> 
-
-                            <div className="link w-full h-[50px] rounded  flex items-center justify-start text-[var(--color-white)]">
-                                <div className="content flex p-2">
-                                    <FaCog className="mr-2 mt-[5px]" />
-                                    Settings
-                                </div>
-                            </div> 
-
-                            <div className="link w-full h-[50px] rounded  flex items-center justify-start text-[var(--color-white)]">
-                                <div className="content flex p-2">
-                                    <FaQuestionCircle className="mr-2 mt-[5px]" />
-                                    Help
-                                </div>
-                            </div> 
-                        </div>
-    
-            </div> 
-            
-            <div className="navbarfooter flex flex-col  absolute bottom-0">
-                <div className="link w-full h-[50px] rounded flex items-center justify-start ml-[20px] text-[var(--color-white)]">
-                    <div className="content flex p-2">
-                        <FaSignOutAlt className="mr-2 mt-[5px]" />
-                            Logout
+                    <div className="flex flex-col justify-between p-4 text-left" >
+                        Logo
                     </div>
-                </div> 
+
+                <div className="flex flex-col justify-between text-left " >
+                    <span className="uppercase text-[14px]">Navigation</span>
+                    <div className="flex text-left p-1" >    
+                            <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center ">
+                                <FaTachometerAlt className="text-gray-600 " />
+                            </div>  
+                        <span className="ml-2 inline mt-1">Dashboard</span>
+                    </div>
+                    <div className="flex text-left p-1" >    
+                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ">
+                                <FaFolder className="text-gray-600" />
+                            </div>  
+                        <span className="ml-2 inline mt-1">Projects</span>
+                    </div>
+                    <div className="flex text-left p-1" >
+                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ">
+                                <FaTasks className="text-gray-600" />
+                            </div>  
+                        <span className="ml-2 inline mt-1">Tasks</span>
+                    </div>
+             
+                </div>
+
+                  <div className="flex flex-col justify-between text-left" >
+                    <span className="uppercase text-[14px]">Collaboration</span>
+                    <div className="flex text-left p-1" >
+                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ">
+                                <FaUsers className="text-gray-600" />
+                            </div>  
+                        <span className="ml-2 inline mt-1">Teams</span>
+                    </div>
+                    <div className="flex text-left p-1" >
+                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ">
+                                <FaEnvelope className="text-gray-600" />
+                            </div>  
+                        <span className="ml-2 inline mt-1">Messages</span>
+                    </div>
+                    <div className="flex text-left p-1" >
+                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ">
+                                <FaCalendarAlt className="text-gray-600" />
+                            </div>  
+                        <span className="ml-2 inline mt-1">Calendar</span>
+                    </div>
+
+          
+                </div>
+
+                  <div className="flex flex-col  justify-between  text-left" >
+                    <span className="uppercase text-[14px]">Settings</span>
+                      <div className="flex text-left p-1" >
+                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ">
+                                <FaCog className="text-gray-600" />
+                            </div>  
+                        <span className="ml-2 inline mt-1">Reports</span>
+                    </div>
+
+                    <div className="flex text-left p-1" >
+                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ">
+                                <FaChartBar className="text-gray-600" />
+                            </div>  
+                        <span className="ml-2 inline mt-1">Settings</span>
+                    </div>
+
+                    <div className="flex text-left p-1" >
+                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ">
+                                <FaLifeRing className="text-gray-600" />
+                            </div>  
+                        <span className="ml-2 inline mt-1">Support</span>
+                    </div>
+
+                </div>
+                    
+                </div>
                 
+          
             </div>
-            
-
-
-    </div>
-                    </div>
     );
 
 }

@@ -10,16 +10,12 @@
   --color-dark: #0f127a;
   --color-muted: #64748b;
   --color-undeline: #F24E1E;
-  --color-card-selected: #A1A3AB;
-  --text: #6b6375;
-  --text-h: #08060d;
-  --text-card-header: #000000;
+  --color-nav-icon: #E7E6EB;
+  --text: #08060d;
   --text-card: #747474;
-  --text-card-created: #A1A3AB;
-  --text-card-in-progress: #0225FF;
-  --text-card-moderate-prio: #02c4ff;
 
-  --bg: #FF6767;
+
+  --bg:  #f8fafc;
   --bg-secondary: #F5F8FF;
   --border: #A1A3ABA1;
   --code-bg: #f4f3ec;
@@ -33,6 +29,7 @@
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
+  --font-menu: "Lufga", sans-serif;
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
