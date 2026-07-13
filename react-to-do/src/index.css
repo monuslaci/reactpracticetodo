@@ -16,7 +16,12 @@
   --color-nav-icon: #E7E6EB;
   --text: #08060d;
   --text-card: #747474;
+  --green-bullet: #00C61F;
+  --green-bullet-transparent: #00C61F40;
+  --red-bullet: #E90004;
+  --red-bullet-transparent: #E9000426;
 
+  --grey-text: #00000080;
 
   --bg:  #f8fafc;
   --bg-secondary: #F5F8FF;

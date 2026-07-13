@@ -16,3 +16,13 @@ export const navItems = {
     ]
 }
 
+
+export const boxItems = [
+    { title: "Total Projects", icon:  "/totalProjects.svg", text: "from last month" },
+    { title: "In progress", icon:  "/inProgress.svg", text: "from this month" },
+    { title: "Completed", icon:  "/completed.svg", text: "from last quarter" },
+    { title: "On Hold", icon:  "/onHold.svg", text: "from last year" }
+];
+
+
+

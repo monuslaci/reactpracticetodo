@@ -1,9 +1,18 @@
 import React from 'react'
 import LeftNavBar from './../components/LeftNavBar.jsx'
+import Box from './../components/Box.jsx'
+import { boxItems } from "../params/params.js";
 
 const Dashboard = () => {
+const boxItemsDBData= [
+    { title: "Total Projects", titleNumber:  25, changeNumber: 20 },
+    { title: "In progress", titleNumber:  17, changeNumber: -15 },
+    { title: "Completed", titleNumber:  32, changeNumber: 25 },
+    { title: "On Hold", titleNumber:  3, changeNumber: 10 }
+];
+
     return (
-        <div className='flex h-screen overflow-hidden'>
+        <div className='flex h-screen overflow-hidden bg-[#F6F5F8]'>
             {/* ** Sidebar */}
             <LeftNavBar />
 
@@ -30,8 +39,11 @@ const Dashboard = () => {
                         <div className='flex gap-4 my-5'>
                             {/* BOX */}
                             {
-                                [1, 2, 3, 4].map((item, index) => (
-                                    <div className='flex-1 h-37.5 bg-amber-300 '>BOX {index}</div>
+                                boxItems.map((item, index) => (
+                                    boxItemsDBData.map((itemData, index) => (
+                                       item.title === itemData.title && <Box key={index} icon={item.icon} title={item.title} text={item.text} titleNumber={itemData.titleNumber} changeNumber={itemData.changeNumber} />
+                                    ))
+                                
 
                                 ))
                             }
