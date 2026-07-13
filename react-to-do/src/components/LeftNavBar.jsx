@@ -1,91 +1,61 @@
 import React, { useState, useEffect } from "react";
 import { FaTachometerAlt , FaExclamation, FaTasks, FaCog, FaQuestionCircle, FaSignOutAlt, FaUsers, FaEnvelope, FaCalendarAlt, FaChartBar, FaLifeRing, FaFolder   } from "react-icons/fa";
-
+import NavBarElement from "./NavBarElement.jsx";
 
 
 export default function LeftNavBar() {
+const [selectedItem, setSelectedItem] = useState("Dashboard");
+
 
 return(
-            <div className="hidden md:flex flex-col items-center h-screen w-73.25 bg-[#F6F5F8] text-[16px]  font-[var(--font-menu)]">
-                <div className="flex flex-col text-left w-[86.35%] bg-[#bff05d] " >
-
-                    <div className="flex flex-col justify-between p-4 text-left" >
-                        Logo
+            <div className="hidden md:flex flex-col items-center h-screen w-73.25 bg-[#F6F5F8] text-[16px]  font-[var(--font-menu)] px-5 py-10">
+                <div className="flex w-full flex-col text-left" >
+                    <div className="flex" >
+                        <div className="flex flex-col justify-between  text-left" >
+                        <img src="/logo.svg" alt="Logo" className="w-10 h-10 mb-2" />
                     </div>
+                    <span className="text-[20px] font-[var(--font-menu)] font-weight-[500] mt-2.5 ml-3">
+                        FlowHive
+                    </span>
+                    </div>
+ 
 
                 <div className="flex flex-col justify-between text-left " >
-                    <span className="uppercase text-[14px]">Navigation</span>
-                    <div className="flex text-left p-1" >    
-                            <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center ">
-                                <FaTachometerAlt className="text-gray-600 " />
-                            </div>  
-                        <span className="ml-2 inline mt-1">Dashboard</span>
-                    </div>
-                    <div className="flex text-left p-1" >    
-                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ">
-                                <FaFolder className="text-gray-600" />
-                            </div>  
-                        <span className="ml-2 inline mt-1">Projects</span>
-                    </div>
-                    <div className="flex text-left p-1" >
-                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ">
-                                <FaTasks className="text-gray-600" />
-                            </div>  
-                        <span className="ml-2 inline mt-1">Tasks</span>
-                    </div>
-             
-                </div>
+                    
 
-                  <div className="flex flex-col justify-between text-left" >
-                    <span className="uppercase text-[14px]">Collaboration</span>
-                    <div className="flex text-left p-1" >
-                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ">
-                                <FaUsers className="text-gray-600" />
-                            </div>  
-                        <span className="ml-2 inline mt-1">Teams</span>
-                    </div>
-                    <div className="flex text-left p-1" >
-                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ">
-                                <FaEnvelope className="text-gray-600" />
-                            </div>  
-                        <span className="ml-2 inline mt-1">Messages</span>
-                    </div>
-                    <div className="flex text-left p-1" >
-                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ">
-                                <FaCalendarAlt className="text-gray-600" />
-                            </div>  
-                        <span className="ml-2 inline mt-1">Calendar</span>
-                    </div>
+            
+                            <NavBarElement selectedItem={selectedItem} onItemClick={setSelectedItem} />
 
-          
-                </div>
-
-                  <div className="flex flex-col  justify-between  text-left" >
-                    <span className="uppercase text-[14px]">Settings</span>
-                      <div className="flex text-left p-1" >
-                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ">
-                                <FaCog className="text-gray-600" />
-                            </div>  
-                        <span className="ml-2 inline mt-1">Reports</span>
-                    </div>
-
-                    <div className="flex text-left p-1" >
-                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ">
-                                <FaChartBar className="text-gray-600" />
-                            </div>  
-                        <span className="ml-2 inline mt-1">Settings</span>
-                    </div>
-
-                    <div className="flex text-left p-1" >
-                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ">
-                                <FaLifeRing className="text-gray-600" />
-                            </div>  
-                        <span className="ml-2 inline mt-1">Support</span>
-                    </div>
-
-                </div>
+            
                     
                 </div>
+            </div>
+
+                
+            <div className="mt-auto w-full p-1">
+                <div className="flex  bg-white rounded-full shadow-sm p-2">
+                    <img
+                        src="/user.png"
+                        alt="User"
+                        className="w-10 h-10 rounded-full object-cover"
+                    />
+
+                    <div className="ml-3">
+                        <p className="text-sm font-semibold text-gray-800">
+                            Hannah James
+                        </p>
+                        <p className="text-xs text-gray-500">
+                            abc@example.com
+                        </p>
+                    </div>
+
+                    <div className="ml-auto flex items-center gap-1 p-3.25">
+                        <img src="/dot.svg" />
+                        <img src="/dot.svg" />
+                        <img src="/dot.svg" />
+                    </div>
+                </div>
+            </div>
                 
           
             </div>

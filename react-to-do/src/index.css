@@ -10,6 +10,9 @@
   --color-dark: #0f127a;
   --color-muted: #64748b;
   --color-undeline: #F24E1E;
+  --color-nav-selected-bg:#A27CFF; 
+  --color-nav-selected-icon-bg: #916EE8;
+  --color-nav-bg: #F6F5F8;
   --color-nav-icon: #E7E6EB;
   --text: #08060d;
   --text-card: #747474;

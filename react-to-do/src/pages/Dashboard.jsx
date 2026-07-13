@@ -25,7 +25,7 @@ const Dashboard = () => {
                     {/* Keep in touch  */}
 
                     <div>
-                        <h1>Keep in touch</h1>
+                        <h1>Keep in touch coach</h1>
 
                         <div className='flex gap-4 my-5'>
                             {/* BOX */}
