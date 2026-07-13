@@ -13,10 +13,10 @@ export default function Box(props) {
                     </div>
                     <div>
                     <div className="flex flex-col items-start">
-                            <span className="text-[var(--color-nav-text)] text-[20px] font-[var(--font-menu)] font-weight-[500] mt-3.5">
+                            <span className="text-[var(--color-nav-text)] text-[20px] font-[var(--font-menu)] font-[500] mt-3.5">
                                 {props.titleNumber}
                             </span>
-                            <span className="text-[var(--color-nav-text)] text-[14px] font-[var(--font-menu)] font-weight-[400] ">
+                            <span className="text-[var(--grey-text)] text-[14px] font-[var(--font-menu)] font-[400] ">
                                 {props.title}
                             </span>
                     </div>
@@ -25,7 +25,7 @@ export default function Box(props) {
                 </div>      
                 <hr className="mt-8 border-gray-300" />
                 <div className="flex justify-between font-[var(--font-menu)] ">
-                    <span className="text-[var(--grey-text)] text-[14px] font-weight-[400] mt-3 text-[14px]">
+                    <span className="text-[var(--grey-text)] text-[14px] font-[400] mt-3 text-[14px]">
                         {props.text}
                     </span>
                     <div className={`text-[14px] w-14 h-8 rounded-full flex items-center justify-center mt-2.5 p-2.5 ${props.changeNumber > 0 ? "bg-[var(--green-bullet-transparent)] text-[var(--green-bullet)]" : "bg-[var(--red-bullet-transparent)] text-[var(--red-bullet)]"}`}>

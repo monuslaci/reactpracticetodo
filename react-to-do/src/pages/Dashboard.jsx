@@ -1,4 +1,5 @@
 import React from 'react'
+import TaskDistribution from './../components/TaskDistribution.jsx'
 import LeftNavBar from './../components/LeftNavBar.jsx'
 import Box from './../components/Box.jsx'
 import { boxItems } from "../params/params.js";
@@ -34,7 +35,7 @@ const boxItemsDBData= [
                     {/* Keep in touch  */}
 
                     <div>
-                        <h1>Keep in touch coach</h1>
+                        <h1 className="text-left">Keep in touch coach</h1>
 
                         <div className='flex gap-4 my-5'>
                             {/* BOX */}
@@ -53,11 +54,13 @@ const boxItemsDBData= [
 
                     {/* Charts  */}
                     <div className='flex sm:flex-row flex-col gap-2.5 my-7.5 h-auto sm:h-122.5'>
-                        <div className='w-full  h-62.5 sm:h-full  bg-amber-100' >Big Chart</div>
-                        <div className='w-full sm:w-12/19 h-62.5 sm:h-full bg-amber-100'>Small Chart</div>
+                        <div className='w-full  h-62.5 sm:h-full  rounded-[24px] bg-[#FFFFFF]' >Big Chart</div>
+                        <div className='w-full sm:w-12/19 h-62.5 sm:h-full rounded-[24px] bg-[#FFFFFF]'>
+                            <TaskDistribution  />
+                        </div>
                     </div>
 
-                    <div className='h-82.5 bg-amber-100 mb-6'>Table</div>
+                    <div className='h-82.5  mb-6 rounded-[24px] bg-[#FFFFFF]'>Table</div>
 
 
 

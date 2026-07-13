@@ -14,7 +14,7 @@ return(
                         <div className="flex flex-col justify-between  text-left" >
                         <img src="/logo.svg" alt="Logo" className="w-10 h-10 mb-2" />
                     </div>
-                    <span className="text-[20px] font-[var(--font-menu)] font-weight-[500] mt-2.5 ml-3">
+                    <span className="text-[20px] font-[var(--font-menu)] font-[500] mt-2.5 ml-3">
                         FlowHive
                     </span>
                     </div>
