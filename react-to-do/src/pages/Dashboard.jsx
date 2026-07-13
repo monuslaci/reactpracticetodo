@@ -1,5 +1,6 @@
 import React from 'react'
 import TaskDistribution from './../components/TaskDistribution.jsx'
+import TaskDistributionList from './../components/TaskDistributionList.jsx'
 import LeftNavBar from './../components/LeftNavBar.jsx'
 import Box from './../components/Box.jsx'
 import { boxItems } from "../params/params.js";
@@ -60,7 +61,9 @@ const boxItemsDBData= [
                         </div>
                     </div>
 
-                    <div className='h-82.5  mb-6 rounded-[24px] bg-[#FFFFFF]'>Table</div>
+                    <div className='h-82.5  mb-6 rounded-[24px] bg-[#FFFFFF]'>
+                        <TaskDistributionList />
+                    </div>
 
 
 
