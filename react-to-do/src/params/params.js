@@ -26,3 +26,15 @@ export const boxItems = [
 
 
 
+export const columnDefs = [
+        { field: "ID", flex: 2 },
+        { field: "Name", flex: 1 },
+        { field: "Assigned", flex: 1 },
+        { field: "In Progress", flex: 1 },
+        { field: "Pending", flex: 1 },
+        { field: "On Hold", flex: 1 },
+        { field: "Department", flex: 1 },
+        { field: "Status", flex: 1 },
+        { field: "Action", flex: 1 },
+    ];
+
