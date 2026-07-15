@@ -7,12 +7,37 @@ export default function TaskDistributionList() {
         {
             ID: "926",
             Name: "John Doe",
+            avatar: "/user.png",
             Assigned: "123 tasks",
             "In Progress": "234 tasks",
             Pending: "345 tasks",
             "On Hold": "456 task",
             Department: "HR",
             Status: "Good",
+            Action: "Edit"
+        },
+        {
+            ID: "923",
+            Name: "Alice Johnson",
+            avatar: "/user.png",
+            Assigned: "200 tasks",
+            "In Progress": "250 tasks",
+            Pending: "350 tasks",
+            "On Hold": "450 task",
+            Department: "Marketing",
+            Status: "Poor",
+            Action: "Edit"
+        },
+                {
+            ID: "922",
+            Name: "Jane Smith",
+            avatar: "/user.png",
+            Assigned: "150 tasks",
+            "In Progress": "200 tasks",
+            Pending: "300 tasks",
+            "On Hold": "400 task",
+            Department: "Finance",
+            Status: "Excellent",
             Action: "Edit"
         },
 
@@ -33,7 +58,7 @@ export default function TaskDistributionList() {
    
             </div> 
             <div className="h-full m-3.25">
-            <Grid rowData={rowData} columnDefs={columnDefs} />
+            <Grid rowData={rowData} columnDefs={columnDefs} rowSelection="multiple"/>
 
             </div>
             

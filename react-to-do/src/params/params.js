@@ -1,3 +1,7 @@
+import UserCell from "../components/UserCell";
+import StatusCell from "../components/StatusCell";
+import ActionCell from "../components/ActionCell";
+
 export const navItems = {
     "Navigation": [
         { title: "Dashboard", icon:  "/dashboard.svg"},
@@ -27,14 +31,14 @@ export const boxItems = [
 
 
 export const columnDefs = [
-        { field: "ID", flex: 2 },
-        { field: "Name", flex: 1 },
+        { field: "ID", flex: 0.75 },
+        { field: "Name", flex: 2, cellRenderer: UserCell },
         { field: "Assigned", flex: 1 },
         { field: "In Progress", flex: 1 },
         { field: "Pending", flex: 1 },
         { field: "On Hold", flex: 1 },
         { field: "Department", flex: 1 },
-        { field: "Status", flex: 1 },
-        { field: "Action", flex: 1 },
+        { field: "Status", flex: 1, cellRenderer: StatusCell },
+        { field: "Action", flex: 1, cellRenderer: ActionCell },
     ];
 

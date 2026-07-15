@@ -23,7 +23,7 @@ export default function Box(props) {
                     </div>
                     
                 </div>      
-                <hr className="mt-8 border-gray-300" />
+                <hr className="mt-6 border-gray-300" />
                 <div className="flex justify-between font-[var(--font-menu)] ">
                     <span className="text-[var(--grey-text)] text-[14px] font-[400] mt-3 text-[14px]">
                         {props.text}

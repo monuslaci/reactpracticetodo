@@ -3,7 +3,7 @@ import TaskDistribution from './../components/TaskDistribution.jsx'
 import TaskDistributionList from './../components/TaskDistributionList.jsx'
 import LeftNavBar from './../components/LeftNavBar.jsx'
 import Box from './../components/Box.jsx'
-import Chart from './../components/Chart.jsx'
+import ChartBox from '../components/ChartBox.jsx'
 import { boxItems } from "../params/params.js";
 
 const Dashboard = () => {
@@ -57,7 +57,7 @@ const boxItemsDBData= [
                     {/* Charts  */}
                     <div className='flex sm:flex-row flex-col gap-2.5 my-7.5 h-auto sm:h-122.5'>
                         <div className='w-full  h-62.5 sm:h-full  rounded-[24px] bg-[#FFFFFF]' >
-                            <Chart />
+                            <ChartBox />
                         </div>
                         <div className='w-full sm:w-12/19 h-62.5 sm:h-full rounded-[24px] bg-[#FFFFFF]'>
                             <TaskDistribution  />

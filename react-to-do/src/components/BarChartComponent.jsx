@@ -3,18 +3,13 @@ import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Toolti
 
 
 
-export default function Chart(props) {
-    const data = [
-        { name: "Low", tasks: 85 },
-        { name: "Medium", tasks: 25 },
-        { name: "High", tasks: 15 },
-        { name: "Completed", tasks: 60 }
-    ];
+export default function BarChartComponent(props) {
+
 
     return (
         <>
         <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data}>
+        <BarChart data={props.data}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
             <YAxis />
@@ -23,7 +18,7 @@ export default function Chart(props) {
 
             <Bar
             dataKey="tasks"
-            fill="#6D5DF6"
+            fill="var(--chart-color)"
             radius={[8, 8, 0, 0]}
             />
         </BarChart>
