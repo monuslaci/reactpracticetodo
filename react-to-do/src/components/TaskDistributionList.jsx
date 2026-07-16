@@ -1,4 +1,5 @@
 import Grid from "./Grid";
+import Button from "./Button";
 import { columnDefs } from "../params/params";
 
 
@@ -45,15 +46,19 @@ export default function TaskDistributionList() {
 
  return (
     <>
-        <div className="flex-1  h-full flex flex-col text-left mt-4 ml-4 mr-4"> 
-            <div className="flex flex-1">
+        <div className="flex-1  h-full flex flex-col text-left mt-4 ml-4 mr-4 gap-3.5"> 
+            <div className="flex flex-1 gap-3.5 m-4">
                 <div className="flex flex-col  font-[var(--font-menu)]">
                     <span className="text-[20px] font-[500]">Task Distribution & Activity</span>
                     <span className="text-[14px] text-[var(--grey-text)]">Monitor task status in realtime</span>
                 </div>  
-                <div className="flex items-center justify-center ml-auto">
-                     <img src="/filters.svg" alt="Filters" className="" />
-                    <img src="/refreshData.svg" alt="Refresh" className="ml-2" />
+                <div className="flex items-center justify-center ml-auto gap-2">
+                     {/* <img src="/filters.svg" alt="Filters" className="" /> */}
+                 <Button text="Filters" color="green" icon="/filters.svg" textSize="text-[14px]"  backgroundColor="bg-[var(--button-bg-light-purple)]" textColor="text-[var(--chart-color)]" 
+                            borderColor="border-[var(--chart-color)]" size="h-9 w-20" buttonProperties="pt-2.5 pb-2.5 pr-3 pl-3 gap-2"/>
+       
+                    <Button text="Refresh data" color="green" icon="/refresh-2.svg" textSize="text-[14px]"  backgroundColor="bg-[var(--button-bg-light-purple)]" textColor="text-[var(--chart-color)]" 
+                            borderColor="border-[var(--chart-color)]" size="h-9 w-28" buttonProperties="pt-2.5 pb-2.5 pr-3 pl-3 gap-2"/>
                 </div>
    
             </div> 

@@ -12,9 +12,9 @@ export default function BarChartComponent(props) {
         <BarChart data={props.data}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
-            <YAxis />
+            <YAxis label={false} />
             <Tooltip />
-            <Legend />
+            {/* <Legend /> */}
 
             <Bar
             dataKey="tasks"
