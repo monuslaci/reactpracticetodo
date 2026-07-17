@@ -17,7 +17,9 @@ const boxItemsDBData= [
     return (
         <div className='flex h-screen overflow-hidden bg-[#F6F5F8]'>
             {/* ** Sidebar */}
-            <LeftNavBar />
+            <div className="hidden lg:block">
+                <LeftNavBar />
+            </div>
 
             {/* Dashboard Layout */}
             <div className='flex-1 overflow-y-auto'>
@@ -36,10 +38,10 @@ const boxItemsDBData= [
 
                     {/* Keep in touch  */}
 
-                    <div>
+                    <div className='sm:flex-col '>
                         <h1 className="text-left">Keep in touch coach</h1>
 
-                        <div className='flex gap-4 my-5'>
+                        <div className='flex gap-4 my-5 lg:grid-cols-4 lg:gap-4 sm:grid-cols-2 sm:gap-4 grid grid-cols-1'>
                             {/* BOX */}
                             {
                                 boxItems.map((item, index) => (
@@ -55,18 +57,19 @@ const boxItemsDBData= [
                     </div>
 
                     {/* Charts  */}
-                    <div className='flex sm:flex-row flex-col gap-2.5 my-7.5 h-auto sm:h-122.5'>
-                        <div className='w-full  h-62.5 sm:h-full  rounded-[24px] bg-[#FFFFFF]' >
+                    <section className="my-7 flex flex-col gap-4 lg:h-[490px] lg:flex-row">
+                        <div className="h-[460px]  w-full overflow-hidden rounded-[24px] bg-white lg:h-full lg:flex-1">
                             <ChartBox />
                         </div>
-                        <div className='w-full sm:w-12/19 h-62.5 sm:h-full rounded-[24px] bg-[#FFFFFF]'>
-                            <TaskDistribution  />
-                        </div>
-                    </div>
 
-                    <div className='h-82.5  mb-6 rounded-[24px] bg-[#FFFFFF]'>
+                        <div className="h-[500px] w-full overflow-hidden rounded-[24px] bg-white lg:h-full lg:w-[42%]">
+                            <TaskDistribution />
+                        </div>
+                    </section>
+
+                    <section className="mb-6 h-[500px] overflow-hidden rounded-[24px] bg-white">
                         <TaskDistributionList />
-                    </div>
+                    </section>
 
 
 

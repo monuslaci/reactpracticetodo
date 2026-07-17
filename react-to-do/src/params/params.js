@@ -30,15 +30,30 @@ export const boxItems = [
 
 
 
-export const columnDefs = [
-        { field: "ID", flex: 0.75 },
-        { field: "Name", flex: 2, cellRenderer: UserCell },
-        { field: "Assigned", flex: 1 },
-        { field: "In Progress", flex: 1 },
-        { field: "Pending", flex: 1 },
-        { field: "On Hold", flex: 1 },
-        { field: "Department", flex: 1 },
-        { field: "Status", flex: 1, cellRenderer: StatusCell },
-        { field: "Action", flex: 1, cellRenderer: ActionCell },
-    ];
+export const desktopColumnDefs = [
+    { field: "ID", flex: 0.75 },
+    { field: "Name", flex: 2, cellRenderer: UserCell },
+    { field: "Assigned", flex: 1 },
+    { field: "In Progress", flex: 1 },
+    { field: "Pending", flex: 1 },
+    { field: "On Hold", flex: 1 },
+    { field: "Department", flex: 1 },
+    { field: "Status", flex: 1, cellRenderer: StatusCell },
+    { field: "Action", flex: 1, cellRenderer: ActionCell },
+];
+
+export const tabletColumnDefs = [
+    { field: "ID", flex: 0.75 },
+    { field: "Name", flex: 2, cellRenderer: UserCell },
+    { field: "Assigned", flex: 1 },
+    { field: "Department", flex: 1 },
+    { field: "Status", flex: 1, cellRenderer: StatusCell },
+    { field: "Action", flex: 1, cellRenderer: ActionCell },
+];
+
+export const mobileColumnDefs = [
+    { field: "Name", flex: 2, cellRenderer: UserCell },
+    { field: "Status", flex: 1, cellRenderer: StatusCell },
+    { field: "Action", flex: 1, cellRenderer: ActionCell },
+];
 

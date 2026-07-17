@@ -1,9 +1,27 @@
 import Grid from "./Grid";
 import Button from "./Button";
-import { columnDefs } from "../params/params";
+import { desktopColumnDefs, tabletColumnDefs, mobileColumnDefs  } from "../params/params";
+import { useState, useEffect } from "react";
+import { useMediaQuery } from "react-responsive";
+
 
 
 export default function TaskDistributionList() {
+    const isMobile = useMediaQuery({
+        query: "(max-width: 639px)"
+    });
+
+    const isTablet = useMediaQuery({
+        query: "(min-width: 640px) and (max-width: 1023px)"
+    });
+
+    const columnDefs = isMobile
+        ? mobileColumnDefs
+        : isTablet
+            ? tabletColumnDefs
+            : desktopColumnDefs;
+ 
+
  const rowData = [
         {
             ID: "926",
