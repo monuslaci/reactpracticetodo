@@ -11,8 +11,8 @@ export default function Box(props) {
                 <div className="flex  ">
                     <div className="w-9 h-9  flex items-center justify-center mt-3.5 mr-2.5">
     
-                        <Button color="green" icon={props.icon} alt={props.title} textSize="text-[14px]" backgroundColor="bg-[var(--color-nav-selected-icon-bg)]" textColor="text-white" 
-                            borderColor="border-[var(--green-bullet)]" size="w-9 h-9" buttonProperties="w-9 h-9" iconProperties="h-9 w-9" textProps="text-[14px]"/>
+                        <Button type="circular" icon={props.icon} 
+                            />
                     </div>
                     <div>
                     <div className="flex flex-col items-start">
@@ -32,12 +32,10 @@ export default function Box(props) {
                         {props.text}
                     </span>
                     {props.changeNumber > 0 ? (
-                        <Button text="Filters" color="green" icon="/upArrow.svg" textSize="text-[14px]" text={`${Math.abs(props.changeNumber)}%`} backgroundColor="bg-[var(--green-bullet-transparent)]" textColor="text-[var(--green-bullet)]" 
-                            borderColor="border-[var(--green-bullet)]" size="w-14 h-8" buttonProperties="mt-2 pt-2 pb-2 pr-2.5 pl-2.5 gap-1.25" iconProperties="h-3 w-3" textProps="text-[14px]"/>
+                        <Button type="green"  icon="/upArrow.svg" text={`${Math.abs(props.changeNumber)}%`}  />
                 
                     ) : (
-                 <Button text="Filters" color="green" icon="/downArrow.svg" textSize="text-[14px]" text={`${Math.abs(props.changeNumber)}%`} backgroundColor="bg-[var(--red-bullet-transparent)]" textColor="text-[var(--red-bullet)]" 
-                            borderColor="border-[var(--red-bullet)]" size="w-14 h-8" buttonProperties="mt-2 pt-2 pb-2 pr-2.5 pl-2.5 gap-1.25" iconProperties="h-3 w-3" textProps="text-[14px]"/>
+                 <Button type="red"  icon="/downArrow.svg"  text={`${Math.abs(props.changeNumber)}%`} />
                     )}
        
                 </div>
