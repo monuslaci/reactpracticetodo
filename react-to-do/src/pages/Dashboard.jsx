@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { FaBars, FaTimes } from 'react-icons/fa'
+import { useMediaQuery } from "react-responsive";
 import TaskDistribution from './../components/TaskDistribution.jsx'
 import TaskDistributionList from './../components/TaskDistributionList.jsx'
 import LeftNavBar from './../components/LeftNavBar.jsx'
@@ -7,12 +9,19 @@ import ChartBox from '../components/ChartBox.jsx'
 import { boxItems } from "../params/params.js";
 
 const Dashboard = () => {
-const boxItemsDBData= [
-    { title: "Total Projects", titleNumber:  25, changeNumber: 20 },
-    { title: "In progress", titleNumber:  17, changeNumber: -15 },
-    { title: "Completed", titleNumber:  32, changeNumber: 25 },
-    { title: "On Hold", titleNumber:  3, changeNumber: 10 }
-];
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const boxItemsDBData= [
+        { title: "Total Projects", titleNumber:  25, changeNumber: 20 },
+        { title: "In progress", titleNumber:  17, changeNumber: -15 },
+        { title: "Completed", titleNumber:  32, changeNumber: 25 },
+        { title: "On Hold", titleNumber:  3, changeNumber: 10 }
+    ];
+
+
+        const isSmallScreen = useMediaQuery({
+        query: "(max-width: 1023px)"
+        });
 
     return (
         <div className='flex h-screen overflow-hidden bg-[#F6F5F8]'>
@@ -21,10 +30,37 @@ const boxItemsDBData= [
                 <LeftNavBar />
             </div>
 
+
             {/* Dashboard Layout */}
             <div className='flex-1 overflow-y-auto'>
                 <div className='mx-auto w-full max-w-277.75 px-4'>
-
+                    {isSmallScreen && (
+                         
+                        <div className="flex justify-start mt-4">
+                            <button
+                                type="button"
+                                className="text-2xl"
+                                onClick={() => setIsMenuOpen((current) => !current)}
+                                aria-label="Toggle navigation menu"
+                                aria-expanded={isMenuOpen}
+                                >
+                                {isMenuOpen ? <FaTimes /> : <FaBars />}
+                            </button>
+                                 {isMenuOpen && (
+                                <div className="flex flex-col gap-3 px-4 pb-4 lg:hidden">
+                                    <a
+                                    href="/"
+                                    className="border-b border-gray-100 py-2"
+                                    onClick={() => setIsMenuOpen(false)}
+                                    >
+                                    Home
+                                    </a>
+                                    </div>
+                                            
+                                        )}
+                        </div>
+                        
+                    )}
                     {/* ** Search Section */}
                     <div className='flex h-14 my-8 items-center justify-between'>
 
