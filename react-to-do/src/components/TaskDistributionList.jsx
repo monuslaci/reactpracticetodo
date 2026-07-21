@@ -72,11 +72,9 @@ export default function TaskDistributionList() {
                 </div>  
                 <div className="flex items-center justify-center ml-auto gap-2">
                      {/* <img src="/filters.svg" alt="Filters" className="" /> */}
-                 {/* <Button text="Filters" color="green" icon="/filters.svg" textSize="text-[14px]"  backgroundColor="bg-[var(--button-bg-light-purple)]" textColor="text-[var(--chart-color)]" 
-                            borderColor="border-[var(--chart-color)]" size="h-9 w-20" buttonProperties="pt-2.5 pb-2.5 pr-3 pl-3 gap-2"/>
+                 <Button type="purple" text="Filters" icon="/filters.svg" />
        
-                    <Button text="Refresh data" color="green" icon="/refresh-2.svg" textSize="text-[14px]"  backgroundColor="bg-[var(--button-bg-light-purple)]" textColor="text-[var(--chart-color)]" 
-                            borderColor="border-[var(--chart-color)]" size="h-9 w-28" buttonProperties="pt-2.5 pb-2.5 pr-3 pl-3 gap-2"/> */}
+                 <Button type="purple" text="Refresh data" icon="/refresh-2.svg" size="h-9 w-28" />
                 </div>
    
             </div> 

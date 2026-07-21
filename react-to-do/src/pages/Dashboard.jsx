@@ -75,9 +75,9 @@ const Dashboard = () => {
                     {/* Keep in touch  */}
 
                     <div className='sm:flex-col '>
-                        <h1 className="text-left">Keep in touch coach</h1>
+                        <div className="text-left font-[var(--font-menu)] text-[24px] ">Keep in touch coach</div>
 
-                        <div className='flex gap-4 my-5 lg:grid-cols-4 lg:gap-4 sm:grid-cols-2 sm:gap-4 grid grid-cols-1'>
+                        <div className='flex gap-4 my-5 xl:grid-cols-4 lg:grid-cols-2 sm:grid-cols-2 grid grid-cols-1'>
                             {/* BOX */}
                             {
                                 boxItems.map((item, index) => (

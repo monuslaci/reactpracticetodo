@@ -31,7 +31,7 @@ export default function Button(props) {
             text=props.text || "";
         break;
 
-    case "red":
+        case "red":
             bgColor = props.backgroundColor || "bg-[var(--red-bullet-transparent)]";
             textColor = props.textColor || "text-[var(--red-bullet)]";
             borderColor = props.borderColor || "border-[var(--red-bullet)]";
@@ -39,6 +39,17 @@ export default function Button(props) {
             textSize = props.textSize || "text-[14px]";
             buttonProperties = props.buttonProperties || "mt-2 pt-2 pb-2 pr-2.5 pl-2.5 gap-1.25";
             iconProperties = props.iconProperties || "h-3 w-3" 
+            text=props.text || "";
+        break;
+
+        case "purple":
+            bgColor = props.backgroundColor || "bg-[var(--button-bg-light-purple)]";
+            textColor = props.textColor || "text-[var(--chart-color)]";
+            borderColor = props.borderColor || "border-[var(--chart-color)]";
+            compSize = props.size || "h-9 w-20" ;
+            textSize = props.textSize || "text-[14px]";
+            buttonProperties = props.buttonProperties || "pt-2.5 pb-2.5 pr-3 pl-3 gap-2";
+            iconProperties = props.iconProperties || "" 
             text=props.text || "";
         break;
 

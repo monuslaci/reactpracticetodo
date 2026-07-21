@@ -32,19 +32,19 @@ return(
             </div>
 
                 
-            <div className="mt-auto w-full p-1">
+            <div className="mt-auto w-full p-1 font-[var(--font-menu)] ">
                 <div className="flex  bg-white rounded-full shadow-sm p-2">
                     <img
                         src="/user.png"
                         alt="User"
-                        className="w-10 h-10 rounded-full object-cover"
+                        className="w-9 h-9 rounded-full object-cover"
                     />
 
                     <div className="ml-3">
                         <p className="text-sm font-semibold text-gray-800">
                             Hannah James
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-500 pl-1">
                             abc@example.com
                         </p>
                     </div>
