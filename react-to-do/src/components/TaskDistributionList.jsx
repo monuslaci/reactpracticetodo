@@ -79,7 +79,7 @@ export default function TaskDistributionList() {
    
             </div> 
             <div className="h-full m-3.25">
-            <Grid rowData={rowData} columnDefs={columnDefs} rowSelection="multiple"/>
+            <Grid rowData={rowData} columnDefs={columnDefs} rowSelection="multiple" height="h-90" width="w-full" />
 
             </div>
             

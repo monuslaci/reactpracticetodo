@@ -2,7 +2,15 @@ import React, { useState, useEffect } from "react";
 
 
 export default function TaskDistribution(props) {
-
+    const data = [
+        { name: "Jan", tasks: 500 },
+        { name: "Feb", tasks: 1300 },
+        { name: "Mar", tasks: 750 },
+        { name: "Apr", tasks: 1800 },
+        { name: "May", tasks: 1300 },
+        { name: "Jun", tasks: 750 },
+    ];
+    
  return (
     <>
         <div className="flex-1 flex flex-col text-left mt-4 ml-4 mr-4"> 
@@ -16,7 +24,7 @@ export default function TaskDistribution(props) {
                 </div>
             </div>  
 
-            <div className="grid grid-cols-3 gap-4 mt-12">
+            <div className="grid grid-cols-3 gap-4 mt-7">
                 <div>
                     <div className="flex flex-col font-[var(--font-menu)]">
                         <span className="text-[14px] text-[var(--grey-text)]">High Priority</span>
@@ -57,7 +65,7 @@ export default function TaskDistribution(props) {
                     </div>  
                 </div>
             </div>
-            <div className="flex flex-col mt-18 border border-[var(--task-distribution-border)] pt-3.25 rounded-[12px] p-5">
+            <div className="flex flex-col mt-13 border border-[var(--task-distribution-border)] pt-3.25 rounded-[12px] p-5">
                 <div className="flex flex-1 items-center gap-2">
                     <div className="shrink-0">
                     <img src="/lowPrioDot.svg" alt="" className="w-2.5 h-2.5 block" />

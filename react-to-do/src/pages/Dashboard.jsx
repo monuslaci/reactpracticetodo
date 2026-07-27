@@ -103,7 +103,7 @@ const Dashboard = () => {
                         </div>
                     </section>
 
-                    <section className="mb-6 h-[500px] overflow-hidden rounded-[24px] bg-white">
+                    <section className="mb-6 h-[600px] overflow-hidden rounded-[24px] bg-white">
                         <TaskDistributionList />
                     </section>
 
