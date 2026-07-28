@@ -1,12 +1,11 @@
 import Grid from "./Grid";
 import Button from "./Button";
 import { desktopColumnDefs, tabletColumnDefs, mobileColumnDefs  } from "../params/params";
-import { useState, useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
 
 
 
-export default function TaskDistributionList() {
+export default function TaskDistributionList({ recentTasks }) {
     const isMobile = useMediaQuery({
         query: "(max-width: 639px)"
     });
@@ -22,45 +21,18 @@ export default function TaskDistributionList() {
             : desktopColumnDefs;
  
 
- const rowData = [
-        {
-            ID: "926",
-            Name: "John Doe",
-            avatar: "/user.png",
-            Assigned: "123 tasks",
-            "In Progress": "234 tasks",
-            Pending: "345 tasks",
-            "On Hold": "456 task",
-            Department: "HR",
-            Status: "Good",
-            Action: "Edit"
-        },
-        {
-            ID: "923",
-            Name: "Alice Johnson",
-            avatar: "/user.png",
-            Assigned: "200 tasks",
-            "In Progress": "250 tasks",
-            Pending: "350 tasks",
-            "On Hold": "450 task",
-            Department: "Marketing",
-            Status: "Poor",
-            Action: "Edit"
-        },
-                {
-            ID: "922",
-            Name: "Jane Smith",
-            avatar: "/user.png",
-            Assigned: "150 tasks",
-            "In Progress": "200 tasks",
-            Pending: "300 tasks",
-            "On Hold": "400 task",
-            Department: "Finance",
-            Status: "Excellent",
-            Action: "Edit"
-        },
-
-    ];
+ const rowData = recentTasks.map((task) => ({
+        ID: task.id,
+        Name: task.assignee?.name || "Unassigned",
+        avatar: task.assignee?.avatar || "/user.png",
+        Assigned: task.projectId ? "Assigned" : "Unassigned",
+        "In Progress": task.status === "in_progress" ? "Yes" : "No",
+        Pending: task.status === "pending" ? "Yes" : "No",
+        "On Hold": task.status === "on_hold" ? "Yes" : "No",
+        Department: task.department || "—",
+        Status: task.status,
+        Action: "Edit"
+    }));
 
  return (
     <>

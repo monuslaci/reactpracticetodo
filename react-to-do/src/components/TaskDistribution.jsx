@@ -1,16 +1,4 @@
-import React, { useState, useEffect } from "react";
-
-
-export default function TaskDistribution(props) {
-    const data = [
-        { name: "Jan", tasks: 500 },
-        { name: "Feb", tasks: 1300 },
-        { name: "Mar", tasks: 750 },
-        { name: "Apr", tasks: 1800 },
-        { name: "May", tasks: 1300 },
-        { name: "Jun", tasks: 750 },
-    ];
-    
+export default function TaskDistribution({ distribution }) {
  return (
     <>
         <div className="flex-1 flex flex-col text-left mt-4 ml-4 mr-4"> 
@@ -28,19 +16,19 @@ export default function TaskDistribution(props) {
                 <div>
                     <div className="flex flex-col font-[var(--font-menu)]">
                         <span className="text-[14px] text-[var(--grey-text)]">High Priority</span>
-                        <span className="text-[20px] font-[500]">274</span>
+                        <span className="text-[20px] font-[500]">{distribution.priorities.high}</span>
                     </div>  
                 </div>
                 <div>
                     <div className="flex flex-col font-[var(--font-menu)]">
                         <span className="text-[14px] text-[var(--grey-text)]">Medium Priority</span>
-                        <span className="text-[20px] font-[500]">150</span>
+                        <span className="text-[20px] font-[500]">{distribution.priorities.medium}</span>
                     </div>  
                 </div>
                 <div>
                     <div className="flex flex-col font-[var(--font-menu)]">
                         <span className="text-[14px] text-[var(--grey-text)]">Low Priority</span>
-                        <span className="text-[20px] font-[500]">85</span>
+                        <span className="text-[20px] font-[500]">{distribution.priorities.low}</span>
                     </div>  
                 </div>
 

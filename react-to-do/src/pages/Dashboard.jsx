@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FaBars, FaTimes } from 'react-icons/fa'
 import { useMediaQuery } from "react-responsive";
 import TaskDistribution from './../components/TaskDistribution.jsx'
@@ -7,9 +7,18 @@ import LeftNavBar from './../components/LeftNavBar.jsx'
 import Box from './../components/Box.jsx'
 import ChartBox from '../components/ChartBox.jsx'
 import { boxItems } from "../params/params.js";
+import { getDashboardData } from "../api/dashboardApi.js";
 
 const Dashboard = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [dashboardData, setDashboardData] = useState(null);
+    const [dashboardError, setDashboardError] = useState(null);
+
+    useEffect(() => {
+        getDashboardData()
+            .then(setDashboardData)
+            .catch(setDashboardError);
+    }, []);
 
     const boxItemsDBData= [
         { title: "Total Projects", titleNumber:  25, changeNumber: 20 },
@@ -79,10 +88,10 @@ const Dashboard = () => {
 
                         <div className='flex gap-4 my-5 xl:grid-cols-4 lg:grid-cols-2 sm:grid-cols-2 grid grid-cols-1'>
                             {/* BOX */}
-                            {
-                                boxItems.map((item, index) => (
-                                    boxItemsDBData.map((itemData, index) => (
-                                       item.title === itemData.title && <Box key={index} icon={item.icon} title={item.title} text={item.text} titleNumber={itemData.titleNumber} changeNumber={itemData.changeNumber} />
+                            {dashboardData &&
+                                boxItems.map((item) => (
+                                    boxItemsDBData.map((itemData) => (
+                                       item.title === itemData.title && <Box key={item.title} icon={item.icon} title={item.title} text={item.text} titleNumber={dashboardData.summary[item.title === "Total Projects" ? "totalProjects" : item.title === "In progress" ? "inProgress" : item.title === "Completed" ? "completed" : "onHold"]} changeNumber={itemData.changeNumber} />
                                     ))
                                 
 
@@ -93,18 +102,19 @@ const Dashboard = () => {
                     </div>
 
                     {/* Charts  */}
-                    <section className="my-7 flex flex-col gap-4 lg:h-[490px] lg:flex-row">
+                    {dashboardError && <p className="text-left text-red-600">Unable to load dashboard data: {dashboardError.message}</p>}
+                    {dashboardData && <section className="my-7 flex flex-col gap-4 lg:h-[490px] lg:flex-row">
                         <div className="h-[460px]  w-full overflow-hidden rounded-[24px] bg-white lg:h-full lg:flex-1">
-                            <ChartBox />
+                            <ChartBox data={Object.entries(dashboardData.distribution.statuses).map(([name, tasks]) => ({ name, tasks }))} />
                         </div>
 
                         <div className="h-[500px] w-full overflow-hidden rounded-[24px] bg-white lg:h-full lg:w-[42%]">
-                            <TaskDistribution />
+                            <TaskDistribution distribution={dashboardData.distribution} />
                         </div>
-                    </section>
+                    </section>}
 
                     <section className="mb-6 h-[600px] overflow-hidden rounded-[24px] bg-white">
-                        <TaskDistributionList />
+                        {dashboardData && <TaskDistributionList recentTasks={dashboardData.recentTasks} />}
                     </section>
 
 
