@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { getProjectsData } from "../api/projectsApi.js";
 import LeftNavBar from './../components/LeftNavBar.jsx'
+import SearchBar from '../components/SearchBar.jsx';
+import WorkCard from '../components/WorkCard.jsx';
 
 const Projects = () => {
     const [projectsData, setProjectsData] = useState(null);
@@ -17,31 +19,24 @@ useEffect(() => {
 }, []);
 
 return (
-        <div className='flex h-screen overflow-hidden bg-[#F6F5F8]'>
-            {/* ** Sidebar */}
-            <div className="hidden lg:block">
-                <LeftNavBar />
-            </div>
-        {projectsData ? (
-            projectsData.map((project) => (
-        
-                <div className="flex-1 h-37.5 w-55 rounded-[32px] bg-[#166b6a] gap-2.5 shadow-sm">
-                    <div className="ml-5.5 mr-5.5">
-                        <div key={project.id}>
-                                <h3>{project.title}</h3>   
-                            Assigned to: {project.assignee?.name || "Unassigned"}
-                            <br />
-                            Status: {project.status}
-                            <br />
-                            Priority: {project.priority}
-                        </div>
+    <div className='flex h-screen overflow-hidden bg-[#F6F5F8]'>
+        <div className="hidden lg:block">
+            <LeftNavBar />
+        </div>
+        <div className="flex-1 overflow-y-auto">
+            <div className="mx-auto w-full max-w-277.75 px-4">
+                <SearchBar />
+                {projectsData ? (
+                    <div className="grid grid-cols-1 gap-5 pb-8 sm:grid-cols-2 xl:grid-cols-3">
+                        {projectsData.map((project) => (
+                            <WorkCard key={project.id} item={project} icon="/projects.svg" type="project" />
+                        ))}
                     </div>
-                </div>
-    
-            ))
-        ) : (
-            <div>Loading projects...</div>
-            )}
+                ) : (
+                    <div>Loading projects...</div>
+                )}
+            </div>
+        </div>
     </div>
 );
 

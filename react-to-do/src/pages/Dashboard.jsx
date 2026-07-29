@@ -8,6 +8,7 @@ import Box from './../components/Box.jsx'
 import ChartBox from '../components/ChartBox.jsx'
 import { boxItems } from "../params/params.js";
 import { getDashboardData } from "../api/dashboardApi.js";
+import SearchBar from '../components/SearchBar.jsx';
 
 const Dashboard = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -70,16 +71,7 @@ const Dashboard = () => {
                         </div>
                         
                     )}
-                    {/* ** Search Section */}
-                    <div className='flex h-14 my-8 items-center justify-between'>
-
-                        {/* Search Input Field */}
-                        <input className='h-8 px-4 bg-amber-100' placeholder='Search Anything' />
-
-                        {/* Icons */}
-                        <div>Icons</div>
-
-                    </div>
+                    <SearchBar />
 
                     {/* Keep in touch  */}
 
