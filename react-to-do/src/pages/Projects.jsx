@@ -1,12 +1,19 @@
 import { useEffect, useState } from 'react'
-import { getProjectsData } from "../api/projectsApi.js";
+import { getProjectsData, searchProjects } from "../api/projectsApi.js";
 import LeftNavBar from './../components/LeftNavBar.jsx'
 import SearchBar from '../components/SearchBar.jsx';
 import WorkCard from '../components/WorkCard.jsx';
 
 const Projects = () => {
     const [projectsData, setProjectsData] = useState(null);
+    const handleProjectSearch = async (searchTerm) => {
+        const response = searchTerm.trim()
+            ? await searchProjects(searchTerm.trim())
+            : await getProjectsData();
 
+        setProjectsData(response.allProjects);
+    };
+    
 useEffect(() => {
     getProjectsData()
         .then((data) => {
@@ -25,7 +32,7 @@ return (
         </div>
         <div className="flex-1 overflow-y-auto">
             <div className="mx-auto w-full max-w-277.75 px-4">
-                <SearchBar page="projects" />
+                <SearchBar page="projects" onSearch={handleProjectSearch} />
                 {projectsData ? (
                     <div className="grid grid-cols-1 gap-5 pb-8 sm:grid-cols-2 xl:grid-cols-3">
                         {projectsData.map((project) => (

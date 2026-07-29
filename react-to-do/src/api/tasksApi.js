@@ -21,3 +21,11 @@ export const getTasksData = async () => {
         allTasks: allTasksResponse.data
     };
 };
+
+export const searchTasks = async (searchTerm) => {
+    const searchResponse = await request(`/tasks/search?q=${encodeURIComponent(searchTerm)}`);
+
+    return {
+        allTasks: searchResponse.data
+    };
+};
