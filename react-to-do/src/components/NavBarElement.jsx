@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { navItems } from "../params/params.js";
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 export default function NavBarElement(props) {
+const navigate = useNavigate();
+const location = useLocation();
 
  return (
     <>
@@ -13,10 +16,10 @@ export default function NavBarElement(props) {
           </span>
 
           {navItems[section].map((item) => {
-            const isSelected = item.title === props.selectedItem;
+              const isSelected = item.path === location.pathname;
 
             return (
-              <div key={item.title} onClick={() => props.onItemClick(item.title)} className={`flex text-left p-1  rounded-full mt-2 ${  isSelected
+              <div key={item.title} onClick={() => {props.onItemClick(item.title); navigate(item.path);}} className={`flex text-left p-1  rounded-full mt-2 ${  isSelected
                     ? "bg-[var(--color-nav-selected-bg)] text-white]"
                     : "bg-[var(--color-nav-bg)] text-[var(--color-nav-text)]"
                 }`}>

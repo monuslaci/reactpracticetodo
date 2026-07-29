@@ -4,19 +4,19 @@ import ActionCell from "../components/ActionCell";
 
 export const navItems = {
     "Navigation": [
-        { title: "Dashboard", icon:  "/dashboard.svg"},
-        { title: "Projects", icon:  "/projects.svg" },
-        { title: "Tasks", icon:  "/tasks.svg" }
+        { title: "Dashboard", icon:  "/dashboard.svg", path: "/dashboard" },
+        { title: "Projects", icon:  "/projects.svg", path: "/projects" },
+        { title: "Tasks", icon:  "/tasks.svg", path: "/tasks" },
     ],
     "Collaboration": [
-        { title: "Teams", icon: "/team.svg" },
-        { title: "Messages", icon: "/messages.svg" },
-        { title: "Calendar", icon: "/calendar.svg" }
+        { title: "Teams", icon: "/team.svg", path: "/teams" },
+        { title: "Messages", icon: "/messages.svg", path: "/messages" },
+        { title: "Calendar", icon: "/calendar.svg", path: "/calendar" }
     ],
     "Settings": [
-        { title: "Reports", icon: "/reports.svg" },
-        { title: "Settings", icon: "/settings.svg" },
-        { title: "Support", icon: "/support.svg" }
+        { title: "Reports", icon: "/reports.svg", path: "/reports" },
+        { title: "Settings", icon: "/settings.svg", path: "/settings" },
+        { title: "Support", icon: "/support.svg", path: "/support" }
     ]
 }
 

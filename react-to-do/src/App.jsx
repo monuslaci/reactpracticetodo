@@ -1,7 +1,8 @@
 import './App.css'
 import { Navigate, Routes, Route } from "react-router-dom";
 import Dashboard from './pages/Dashboard.jsx'
-import Test from './pages/Test.jsx'
+import Projects from './pages/Projects.jsx'
+import Tasks from './pages/Tasks.jsx'
 
 function App() {
   return (
@@ -11,7 +12,8 @@ function App() {
           <Routes>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<Dashboard />} />
-           <Route path="/test" element={<Test />} />
+          <Route path="/tasks" element={<Tasks />} />
+           <Route path="/projects" element={<Projects />} />
 
         </Routes>
 

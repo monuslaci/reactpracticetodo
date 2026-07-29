@@ -3,6 +3,7 @@ import { FaTachometerAlt , FaExclamation, FaTasks, FaCog, FaQuestionCircle, FaSi
 import NavBarElement from "./NavBarElement.jsx";
 
 
+
 export default function LeftNavBar() {
 const [selectedItem, setSelectedItem] = useState("Dashboard");
 
@@ -20,14 +21,12 @@ return(
                     </div>
  
 
-                <div className="flex flex-col justify-between text-left " >
-                    
+                <div className="flex flex-col justify-between text-left " >                  
 
             
                             <NavBarElement selectedItem={selectedItem} onItemClick={setSelectedItem} />
 
-            
-                    
+                               
                 </div>
             </div>
 

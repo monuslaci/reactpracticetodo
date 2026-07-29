@@ -74,7 +74,7 @@ const Dashboard = () => {
                     <div className='flex h-14 my-8 items-center justify-between'>
 
                         {/* Search Input Field */}
-                        <input className='h-8 px-4 bg-amber-100' placeholder='Search Something' />
+                        <input className='h-8 px-4 bg-amber-100' placeholder='Search Anything' />
 
                         {/* Icons */}
                         <div>Icons</div>
