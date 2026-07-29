@@ -26,7 +26,7 @@ return (
         </div>
         <div className="flex-1 overflow-y-auto">
             <div className="mx-auto w-full max-w-277.75 px-4">
-                <SearchBar />
+                <SearchBar page="tasks" />
                 {tasksData ? (
                     <div className="grid grid-cols-1 gap-5 pb-8 sm:grid-cols-2 xl:grid-cols-3">
                         {tasksData.map((task) => (

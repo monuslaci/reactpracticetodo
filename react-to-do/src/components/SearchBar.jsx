@@ -1,4 +1,4 @@
-const SearchBar = () => {
+const SearchBar = ({ page }) => {
     return (
         <div className='flex h-14 my-8 items-center justify-between gap-6'>
 
