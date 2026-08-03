@@ -1,22 +1,45 @@
 import { useEffect, useState } from 'react'
 import { useParams } from "react-router-dom";
 import { getTaskDetails, updateTask } from "../api/tasksApi.js";
+import { getProjectDetails } from "../api/projectsApi.js";
 import LeftNavBar from './../components/LeftNavBar.jsx'
 import SearchBar from '../components/SearchBar.jsx';
 import WorkCard from '../components/WorkCard.jsx';
 
 const ProjectConnectedTasks = (item) => {
     const { id } = useParams();
-    const [connectedTasks, setConnectedTasks] = useState(null);
-    const [connectedTasksData, setConnectedTasksData] = useState(null);
+    const [projectDetails, setProjectDetails] = useState(null);
+    const [connectedTasksList, setConnectedTasksList] = useState([]);
 
 
 
-    useEffect(() => {
-        getTaskDetails(id)
-            .then(({ taskDetails }) => setConnectedTasksData(taskDetails))
-            .catch(console.error);
-    }, [id]);
+useEffect(() => {
+    async function loadProject() {
+        try {
+            const { projectDetails } = await getProjectDetails(id);
+
+            setProjectDetails(projectDetails);
+
+            const taskIds = projectDetails.taskIds || [];
+
+            const taskPromises = taskIds.map(taskId =>
+                getTaskDetails(taskId)
+            );
+
+            const results = await Promise.all(taskPromises);
+
+            const tasks = results.map(r => r.taskDetails);
+
+            setConnectedTasksList(tasks);
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }
+
+    loadProject();
+}, [id]);
+
 
     return (
         <div className='flex h-screen overflow-hidden bg-[#F6F5F8]'>
@@ -24,20 +47,20 @@ const ProjectConnectedTasks = (item) => {
                 <LeftNavBar />
             </div>
             <form className="flex-1 overflow-y-auto font-[var(--font-menu)]">
-                <div>Task ID: {id}</div>
-                <div>{connectedTasksData ? JSON.stringify(connectedTasksData) : "Loading task details..."}</div>
+                <span className="mb-4 mt-30 block text-lg font-semibold text-[32px]">
+                    Tasks connected to {projectDetails ? projectDetails.name : "this"} project
+                </span>
 
-                {connectedTasksData && 
-                <div>
-                    <label className="ml-3">Task Title 
-                        <input name="title" defaultValue={connectedTasksData.title} className="rounded border border-gray-300 ml-3 py-0.5"></input>
-                    </label>
-                    <label className="ml-3">Task Description
-                        <input name="description" defaultValue={connectedTasksData.description} className="rounded border border-gray-300 ml-3 py-0.5"></input>
-                    </label>
+                <div className="grid grid-cols-2 gap-4 xl:grid-cols-3">
+                    {connectedTasksList?.map((task) => (
+                        <WorkCard
+                            key={task.id}
+                            item={task}
+                            icon="/tasks.svg"
+                            type="task"
+                        />
+                    ))}
                 </div>
- 
-                }
             </form>
         </div>
     );

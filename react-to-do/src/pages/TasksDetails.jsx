@@ -80,7 +80,7 @@ const TaskDetails = () => {
                 <LeftNavBar />
             </div>
        
-            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto pt-32 font-[var(--font-menu)]">
+            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto pt-32 font-[var(--font-menu)]   ">
                 {taskData && (
                     
                     <div className="mx-auto max-w-3xl rounded-lg bg-white p-6 shadow">

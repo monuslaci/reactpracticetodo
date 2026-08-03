@@ -22,6 +22,14 @@ export const getProjectsData = async () => {
     };
 };
 
+export const getProjectDetails = async (projectId) => {
+    const projectDetailsResponse = await request(`/projects/${projectId}`);
+
+    return {
+        projectDetails: projectDetailsResponse.data
+    };
+};
+
 export const searchProjects = async (searchTerm) => {
     const searchResponse = await request(`/projects/search?q=${encodeURIComponent(searchTerm)}`);
 

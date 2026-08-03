@@ -30,7 +30,7 @@ useEffect(() => {
 return (
     <div className='flex h-screen overflow-hidden bg-[#F6F5F8]'>
         <div className="hidden lg:block">
-            <LeftNavBar />
+            <LeftNavBar  />
         </div>
         <div className="flex-1 overflow-y-auto">
             <div className="mx-auto w-full max-w-277.75 px-4">
