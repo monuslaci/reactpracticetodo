@@ -22,10 +22,40 @@ export const getTasksData = async () => {
     };
 };
 
+export const getTaskDetails = async (taskId) => {
+    const taskDetailsResponse = await request(`/tasks/${taskId}`);
+
+    return {
+        taskDetails: taskDetailsResponse.data
+    };
+};
+
+
 export const searchTasks = async (searchTerm) => {
     const searchResponse = await request(`/tasks/search?q=${encodeURIComponent(searchTerm)}`);
 
     return {
         allTasks: searchResponse.data
+    };
+};
+
+export const updateTask = async (taskId, updatedData) => {
+    const updateResponse = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(updatedData)
+    });
+
+    if (!updateResponse.ok) {
+        const responseBody = await updateResponse.text();
+        throw new Error(`API request failed (${updateResponse.status}): ${responseBody}`);
+    }
+
+    const updateResponseData = await updateResponse.json();
+
+    return {
+        success: updateResponseData.success
     };
 };

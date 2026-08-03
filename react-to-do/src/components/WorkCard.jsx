@@ -1,3 +1,5 @@
+import { useLocation, useNavigate } from "react-router-dom";
+
 function formatDate(timestamp) {
     if (!timestamp?._seconds) {
         return "Date unavailable";
@@ -7,6 +9,7 @@ function formatDate(timestamp) {
 }
 
 export default function WorkCard({ item, icon, type }) {
+    const navigate = useNavigate();
     const isProject = type === "project";
 
     const statusStyles = {
@@ -47,7 +50,7 @@ export default function WorkCard({ item, icon, type }) {
     const priorityLabel = prioLabels[normalizedPriority] || prioValue;
 
     return (
-        <article className="flex min-h-52 flex-col justify-between rounded-3xl border border-gray-100 bg-white p-5 text-left shadow-sm transition-shadow hover:shadow-md">
+        <article className="flex min-h-52 flex-col justify-between rounded-3xl border border-gray-100 bg-white p-5 text-left shadow-sm transition-shadow hover:shadow-md" onClick={() => navigate(isProject ? `/projects/${item.id}` : `/taskDetails/${item.id}`)}>
             <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
                     <h2 className="truncate text-lg font-semibold text-gray-900">

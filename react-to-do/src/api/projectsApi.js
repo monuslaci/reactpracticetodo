@@ -29,3 +29,4 @@ export const searchProjects = async (searchTerm) => {
         allProjects: searchResponse.data
     };
 };
+

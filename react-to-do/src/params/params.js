@@ -57,3 +57,17 @@ export const mobileColumnDefs = [
     { field: "Action", flex: 1, cellRenderer: ActionCell },
 ];
 
+export const statusLabels = {
+        completed: "Completed",
+        in_progress: "In Progress",
+        pending: "Pending",
+        on_hold: "On Hold",
+    };
+
+export const prioLabels = {
+        high: "High",
+        medium: "Medium",
+        low: "Low",
+    };
+
+export const assignees  = [ { name: "George Smith", email: "george@example.com" }, { name: "Carol Bloggs", email: "carol@example.com" }, { name: "John Doe", email: "john@example.com" }, { name: "Charlie White", email: "charlie@example.com" }, { name: "Jane Smith", email: "janes@example.com" }, { name: "Fred Bloggs", email: "fred@example.com" }, { name: "Jane Doe", email: "jane@example.com" } ];
