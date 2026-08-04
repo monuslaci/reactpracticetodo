@@ -36,12 +36,12 @@ return (
             <LeftNavBar  />
         </div>
         <div className="flex-1 overflow-y-auto">
-            <button className="flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white" onClick={() => navigate('/tasksDetails')}>
+            <div className="mx-auto w-full max-w-277.75 px-4">
+                <SearchBar page="tasks" onSearch={handleTaskSearch} />
+                            <button className="flex items-center mb-5 gap-2 rounded bg-blue-600 px-4 py-2 text-white" onClick={() => navigate('/tasksDetails')}>
                 <FaPlus />
                 Create Task
             </button>
-            <div className="mx-auto w-full max-w-277.75 px-4">
-                <SearchBar page="tasks" onSearch={handleTaskSearch} />
                 {tasksData ? (
                     <div className="grid grid-cols-1 gap-5 pb-8 sm:grid-cols-2 xl:grid-cols-3">
                         {tasksData.map((task) => (

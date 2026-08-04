@@ -38,3 +38,45 @@ export const searchProjects = async (searchTerm) => {
     };
 };
 
+export const updateProject = async (projectId, updatedData) => {
+    const updateResponse = await fetch(`${API_BASE_URL}/projects/${projectId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(updatedData)
+    });
+
+    if (!updateResponse.ok) {
+        const responseBody = await updateResponse.text();
+        throw new Error(`API request failed (${updateResponse.status}): ${responseBody}`);
+    }
+
+    const updateResponseData = await updateResponse.json();
+
+    return {
+        success: updateResponseData.success
+    };
+};
+
+export const createProject = async (newProjectData) => {
+    const createResponse = await fetch(`${API_BASE_URL}/projects`, {
+        method: "POST", 
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newProjectData)
+    });
+
+    if (!createResponse.ok) {
+        const responseBody = await createResponse.text();
+        throw new Error(`API request failed (${createResponse.status}): ${responseBody}`);
+    }
+
+    const createResponseData = await createResponse.json();
+
+    return {
+        success: createResponseData.success,
+        projectDetails: createResponseData.data
+    };
+};

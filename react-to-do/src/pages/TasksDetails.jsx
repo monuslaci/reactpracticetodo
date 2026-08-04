@@ -106,9 +106,9 @@ const TaskDetails = () => {
                 <LeftNavBar />
             </div>
        
-            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto pt-32 font-[var(--font-menu)]   ">
+            <form onSubmit={handleSubmit} className="flex min-w-0 flex-1 items-center justify-center overflow-y-auto p-6 font-[var(--font-menu)]">
                 {taskData && (                    
-                    <div className="mx-auto max-w-3xl rounded-lg bg-white p-6 shadow">
+                    <div className="w-full max-w-3xl rounded-lg bg-white p-6 shadow">
                         <span className="mb-4 block text-[32px] font-semibold">
                             {isCreate ? "Create task" : "Edit task"}
                         </span>
