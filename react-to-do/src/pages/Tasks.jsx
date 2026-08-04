@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { getTasksData, searchTasks } from "../api/tasksApi.js";
 import LeftNavBar from './../components/LeftNavBar.jsx'
 import SearchBar from '../components/SearchBar.jsx';
 import WorkCard from '../components/WorkCard.jsx';
+import {FaPlus} from 'react-icons/fa'
 
 const Tasks = () => {
+    const navigate = useNavigate();
     const [tasksData, setTasksData] = useState(null);
 
     const handleTaskSearch = async (searchTerm) => {
@@ -33,6 +36,10 @@ return (
             <LeftNavBar  />
         </div>
         <div className="flex-1 overflow-y-auto">
+            <button className="flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white" onClick={() => navigate('/tasksDetails')}>
+                <FaPlus />
+                Create Task
+            </button>
             <div className="mx-auto w-full max-w-277.75 px-4">
                 <SearchBar page="tasks" onSearch={handleTaskSearch} />
                 {tasksData ? (

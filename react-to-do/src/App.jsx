@@ -5,6 +5,7 @@ import Projects from './pages/Projects.jsx'
 import Tasks from './pages/Tasks.jsx'
 import TaskDetails from './pages/TasksDetails.jsx'
 import ProjectConnectedTasks from './pages/ProjectConnectedTasks.jsx'
+import CreateTasks from './pages/CreateTasks.jsx'
 
 function App() {
   return (
@@ -15,7 +16,8 @@ function App() {
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/tasks" element={<Tasks />} />
-            <Route path="/taskDetails/:id" element={<TaskDetails />} />
+            <Route path="/tasksDetails/:id?" element={<TaskDetails />} />
+            {/*  the id is optional, so it can be used for both creating a new task and editing an existing one */}
             <Route path="/projects/:id" element={<ProjectConnectedTasks />} />
             <Route path="/projects" element={<Projects />} />
 

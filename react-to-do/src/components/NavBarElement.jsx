@@ -16,7 +16,7 @@ const location = useLocation();
           </span>
 
           {navItems[section].map((item) => {
-              const isSelected = item.path === location.pathname;
+              const isSelected = item.path === location.pathname || (item.path !== "/" && location.pathname.startsWith(item.path));
 
             return (
               <div key={item.title} onClick={() => {props.onItemClick(item.title); navigate(item.path);}} className={`flex text-left p-1  rounded-full mt-2 ${  isSelected
