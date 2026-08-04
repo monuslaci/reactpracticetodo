@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
+import Select from "react-select";
 import { useParams } from "react-router-dom";
-import { getTaskDetails, updateTask } from "../api/tasksApi.js";
+import { getTasksData, updateTask, getTaskDetails } from "../api/tasksApi.js";
 import { getProjectDetails, createProject, updateProject } from "../api/projectsApi.js";
 import LeftNavBar from './../components/LeftNavBar.jsx'
 import SearchBar from '../components/SearchBar.jsx';
 import WorkCard from '../components/WorkCard.jsx';
 import { statusLabels } from "../params/params.js";
 import { useNavigate } from 'react-router-dom';
+import AsyncSelect from "react-select/async";
 
 const ProjectConnectedTasks = (item) => {
     const { id } = useParams();
@@ -14,52 +16,62 @@ const ProjectConnectedTasks = (item) => {
     const [connectedTasksList, setConnectedTasksList] = useState([]);
     const [isCreate, setIsCreate] = useState(false);
     const [saveMessage, setSaveMessage] = useState("");
+    const [selectedTasks, setSelectedTasks] = useState([]);
     const [isSaving, setIsSaving] = useState(false);
+    const [tasksData, setTasksData] = useState([]);
+    const [tasksLoaded, setTasksLoaded] = useState(false);
+    const [isLoadingTasks, setIsLoadingTasks] = useState(false);
     const navigate = useNavigate();
 
 
-useEffect(() => {
-    async function loadProject() {
-        try {
-            if (!id) 
-            {
-                setIsCreate(true);
+    useEffect(() => {
+        async function loadProject() {
+            try {
+                if (!id) 
+                {
+                    setIsCreate(true);
 
-                setProjectDetails({
-                    name: "",
-                    description: "",
-                    status: Object.keys(statusLabels)[0] ?? "",
-                    dueDate: ""
-                    
-                });
+                    setProjectDetails({
+                        name: "",
+                        description: "",
+                        status: Object.keys(statusLabels)[0] ?? "",
+                        dueDate: ""
+                        
+                    });
 
-                return;
+                    return;
+                }
+                setIsCreate(false);
+
+                const { projectDetails } = await getProjectDetails(id);
+
+                setProjectDetails(projectDetails);
+
+                const taskIds = projectDetails.taskIds || [];
+
+                const taskPromises = taskIds.map(taskId =>
+                    getTaskDetails(taskId)
+                );
+
+                const results = await Promise.all(taskPromises);
+
+                const tasks = results.map(r => r.taskDetails);
+
+                setConnectedTasksList(tasks);
+                setSelectedTasks(
+                    tasks.map((task) => ({
+                        value: task.id,
+                        label: task.title
+                    }))
+                );
             }
-            setIsCreate(false);
-
-            const { projectDetails } = await getProjectDetails(id);
-
-            setProjectDetails(projectDetails);
-
-            const taskIds = projectDetails.taskIds || [];
-
-            const taskPromises = taskIds.map(taskId =>
-                getTaskDetails(taskId)
-            );
-
-            const results = await Promise.all(taskPromises);
-
-            const tasks = results.map(r => r.taskDetails);
-
-            setConnectedTasksList(tasks);
+            catch (err) {
+                console.error(err);
+            }
         }
-        catch (err) {
-            console.error(err);
-        }
-    }
 
-    loadProject();
-}, [id]);
+        loadProject();
+    }, [id]);
 
 
     const handleChange = (event) => {
@@ -106,6 +118,43 @@ useEffect(() => {
         return new Date(timestamp._seconds * 1000).toLocaleString();
     };
 
+    const loadTasks = async () => {
+        if (tasksLoaded || isLoadingTasks) return;
+
+        setIsLoadingTasks(true);
+
+        try {
+            const data = await getTasksData();
+            const allTasks = data.allTasks ?? [];
+
+            setTasksData(allTasks);
+            setTasksLoaded(true);
+            } catch (error) {
+                console.error("Failed to load tasks:", error);
+            } finally {
+                setIsLoadingTasks(false);
+            }
+        };;
+
+        const taskOptions = useMemo(
+            () =>
+                tasksData.map((task) => ({
+                    value: task.id,
+                    label: task.title
+                })),
+            [tasksData]
+        );
+
+    const handleSelectedTasksChange = (selectedOptions) => {
+        const options = selectedOptions ?? [];
+
+        setSelectedTasks(options);
+
+        setProjectDetails((current) => ({
+            ...current,
+            taskIds: options.map((option) => option.value)
+        }));
+    };
 
     return (
         <div className='flex h-screen overflow-hidden bg-[#F6F5F8]'>
@@ -173,6 +222,32 @@ useEffect(() => {
                                                 )
                                             )}
                                         </select>
+
+                                        <label
+                                            htmlFor="connectedTasks"
+                                            className="self-center font-medium"
+                                        >
+                                            Connected tasks
+                                        </label>
+
+                                        <Select
+                                            inputId="connectedTasks"
+                                            isMulti
+                                            options={taskOptions}
+                                            value={selectedTasks}
+                                            onChange={handleSelectedTasksChange}
+                                            onMenuOpen={loadTasks}
+                                            isLoading={isLoadingTasks}
+                                            closeMenuOnSelect={false}
+                                            placeholder={
+                                                isLoadingTasks
+                                                ? "Loading tasks..."
+                                                : "Search and select tasks..."
+                                            }
+                                            noOptionsMessage={() =>
+                                                isLoadingTasks ? "Loading tasks..." : "No tasks found"
+                                            }
+                                        />
             
                             
                                         {!isCreate && (

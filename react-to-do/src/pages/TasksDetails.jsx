@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getTaskDetails, updateTask, createTask } from "../api/tasksApi.js";
+import { getTaskDetails, updateTask, createTask, getTasksData } from "../api/tasksApi.js";
 import LeftNavBar from "./../components/LeftNavBar.jsx";
 import { statusLabels, prioLabels, assignees  } from "../params/params.js";
 
