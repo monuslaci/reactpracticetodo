@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getTaskDetails, updateTask, createTask, getTasksData } from "../api/tasksApi.js";
+import { getTaskDetails, updateTask, createTask, getTasksData, deleteTask } from "../api/tasksApi.js";
 import LeftNavBar from "./../components/LeftNavBar.jsx";
 import { statusLabels, prioLabels, assignees  } from "../params/params.js";
 
@@ -8,6 +8,7 @@ const TaskDetails = () => {
     const { id } = useParams();
     const [taskData, setTaskData] = useState(null);
     const [isSaving, setIsSaving] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [saveMessage, setSaveMessage] = useState("");
     const [isCreate, setIsCreate] = useState(false);
     const navigate = useNavigate();
@@ -74,6 +75,18 @@ const TaskDetails = () => {
             setSaveMessage(isCreate ? "Failed to create task." : "Failed to update task.");
         } finally {
             setIsSaving(false);
+        }
+    };
+
+    const handleDelete = async (event) => {
+        event.preventDefault();
+        setIsDeleting(true);
+        try {
+            await deleteTask(id);
+        } catch (error) {
+            console.error("Error deleting task:", error);
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -280,6 +293,9 @@ const TaskDetails = () => {
                                     {isSaving ? "Creating task..." : "Create task"}
                                 </button>
                             )}
+                            <button type="submit" disabled={isDeleting} className="rounded bg-red-600 px-5 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50" onClick={async (e) => {handleDelete(e); navigate('/tasks');}}>
+                                {isDeleting ? "Deleting task..." : "Delete task"}
+                            </button>
                         </div>
                     </div>
                 )}

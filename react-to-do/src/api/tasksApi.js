@@ -81,3 +81,24 @@ export const createTask = async (newTaskData) => {
         taskDetails: createResponseData.data
     };
 };
+
+export const deleteTask = async (taskId) => {
+    const deleteResponse = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!deleteResponse.ok) {
+        const responseBody = await deleteResponse.text();
+        throw new Error(`API request failed (${deleteResponse.status}): ${responseBody}`);
+    }
+
+    const deleteResponseData = await deleteResponse.json();
+
+    return {
+        success: deleteResponseData.success,
+        message: deleteResponseData.message
+    };
+};

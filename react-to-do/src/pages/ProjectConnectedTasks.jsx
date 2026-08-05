@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react'
 import Select from "react-select";
 import { useParams } from "react-router-dom";
 import { getTasksData, updateTask, getTaskDetails } from "../api/tasksApi.js";
-import { getProjectDetails, createProject, updateProject } from "../api/projectsApi.js";
+import { getProjectDetails, createProject, updateProject, deleteProject } from "../api/projectsApi.js";
 import LeftNavBar from './../components/LeftNavBar.jsx'
 import SearchBar from '../components/SearchBar.jsx';
 import WorkCard from '../components/WorkCard.jsx';
@@ -18,6 +18,7 @@ const ProjectConnectedTasks = (item) => {
     const [saveMessage, setSaveMessage] = useState("");
     const [selectedTasks, setSelectedTasks] = useState([]);
     const [isSaving, setIsSaving] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [tasksData, setTasksData] = useState([]);
     const [tasksLoaded, setTasksLoaded] = useState(false);
     const [isLoadingTasks, setIsLoadingTasks] = useState(false);
@@ -83,7 +84,7 @@ const ProjectConnectedTasks = (item) => {
         }));
     };
 
-    
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -130,6 +131,17 @@ const ProjectConnectedTasks = (item) => {
         }
     };
 
+    const handleDelete = async (event) => {
+        event.preventDefault();
+        setIsDeleting(true);
+        try {
+            await deleteProject(projectDetails.id);
+        } catch (error) {
+            console.error("Error deleting project:", error);
+        } finally {
+            setIsDeleting(false);
+        }
+    };
 
     const formatTimestamp = (timestamp) => {
         if (!timestamp) return "";
@@ -312,6 +324,9 @@ const ProjectConnectedTasks = (item) => {
                                                 {isSaving ? "Creating project..." : "Create project"}
                                             </button>
                                         )}
+                                        <button type="submit" disabled={isDeleting} className="rounded bg-red-600 px-5 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50" onClick={async (e) => {handleDelete(e); navigate('/projects');}}>
+                                            {isDeleting ? "Deleting project..." : "Delete project"}
+                                        </button>
                                     </div>
 
                                     
