@@ -82,7 +82,7 @@ export const createProject = async (newProjectData) => {
     };
 };
 
-export const deleteProject = async (projectId) => {
+export const deleteProject = async (projectId) => { 
     const deleteResponse = await fetch(`${API_BASE_URL}/projects/${projectId}`, {
         method: "DELETE",
         headers: {
@@ -95,7 +95,23 @@ export const deleteProject = async (projectId) => {
         throw new Error(`API request failed (${deleteResponse.status}): ${responseBody}`);
     }
 
-    const deleteResponseData = await deleteResponse.json();
+        if (deleteResponse.status === 204) {
+        return {
+            success: true,
+            message: "Project deleted successfully."
+        };
+    }
+
+    const responseText = await deleteResponse.text();
+
+    if (!responseText) {
+        return {
+            success: true,
+            message: "Project deleted successfully."
+        };
+    }
+
+    const deleteResponseData = JSON.parse(responseText);
 
     return {
         success: deleteResponseData.success,

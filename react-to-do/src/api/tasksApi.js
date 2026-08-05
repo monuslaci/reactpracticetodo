@@ -95,7 +95,23 @@ export const deleteTask = async (taskId) => {
         throw new Error(`API request failed (${deleteResponse.status}): ${responseBody}`);
     }
 
-    const deleteResponseData = await deleteResponse.json();
+        if (deleteResponse.status === 204) {
+        return {
+            success: true,
+            message: "Task deleted successfully."
+        };
+    }
+
+    const responseText = await deleteResponse.text();
+
+    if (!responseText) {
+        return {
+            success: true,
+            message: "Task deleted successfully."
+        };
+    }
+
+    const deleteResponseData = JSON.parse(responseText);
 
     return {
         success: deleteResponseData.success,
