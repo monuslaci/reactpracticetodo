@@ -83,6 +83,7 @@ const ProjectConnectedTasks = (item) => {
         }));
     };
 
+    
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -93,10 +94,27 @@ const ProjectConnectedTasks = (item) => {
 
         try {
             const response = isCreate ? await createProject(projectDetails) : await updateProject(id, projectDetails);
+            const savedProject = response?.projectDetails;
 
-            if (response?.projectDetails) {
-                setProjectDetails(response.projectDetails);
+            if (!savedProject) {
+                throw new Error("The API did not return projectDetails.");
             }
+   
+            setProjectDetails(savedProject);
+            const taskIds = savedProject.taskIds || [];
+
+            const taskPromises = taskIds.map(taskId =>
+                getTaskDetails(taskId)
+            );
+
+            const results = await Promise.all(taskPromises);
+
+                const tasks = results
+                .map((result) => result.taskDetails)
+                .filter(Boolean);
+
+            setConnectedTasksList(tasks);
+            
 
             setSaveMessage(isCreate ? "Project created successfully." : "Project updated successfully.");
             if (isCreate)
@@ -112,11 +130,13 @@ const ProjectConnectedTasks = (item) => {
         }
     };
 
+
     const formatTimestamp = (timestamp) => {
         if (!timestamp) return "";
 
         return new Date(timestamp._seconds * 1000).toLocaleString();
     };
+
 
     const loadTasks = async () => {
         if (tasksLoaded || isLoadingTasks) return;
@@ -145,6 +165,7 @@ const ProjectConnectedTasks = (item) => {
             [tasksData]
         );
 
+
     const handleSelectedTasksChange = (selectedOptions) => {
         const options = selectedOptions ?? [];
 
@@ -154,6 +175,8 @@ const ProjectConnectedTasks = (item) => {
             ...current,
             taskIds: options.map((option) => option.value)
         }));
+
+        
     };
 
     return (
@@ -272,6 +295,7 @@ const ProjectConnectedTasks = (item) => {
             
                                     </div>
             
+                                                
                                     <div className="mt-6 flex items-center justify-end gap-4">
                                         {saveMessage && (
                                             <span className="text-sm text-gray-600">
@@ -289,26 +313,29 @@ const ProjectConnectedTasks = (item) => {
                                             </button>
                                         )}
                                     </div>
+
+                                    
                                 </div>
                             )}
                         </form>
-                        <form className="flex-1 overflow-y-auto font-[var(--font-menu)]">
-                            <span className="mb-4 mt-30 block text-lg font-semibold text-[32px]">
-                                Tasks connected to { projectDetails ? projectDetails.name : "this"} project
-                            </span>
+                        {!isCreate && (
+                            <form className="flex-1 overflow-y-auto font-[var(--font-menu)]">
+                                <span className="mb-4 mt-30 block text-lg font-semibold text-[32px]">
+                                    Tasks connected to { projectDetails ? projectDetails.name : "this"} project
+                                </span>
 
-                            <div className="grid grid-cols-2 gap-4 xl:grid-cols-3">
-                                {connectedTasksList?.map((task) => (
-                                    <WorkCard
-                                        key={task.id}
-                                        item={task}
-                                        icon="/tasks.svg"
-                                        type="task"
-                                    />
-                                ))}
-                            </div>
-                        </form>
-
+                                <div className="grid grid-cols-2 gap-4 xl:grid-cols-3">
+                                    {connectedTasksList?.map((task) => (
+                                        <WorkCard
+                                            key={task.id}
+                                            item={task}
+                                            icon="/tasks.svg"
+                                            type="task"
+                                        />
+                                    ))}
+                                </div>
+                            </form>
+                        )}
                    </div>
 
         </div>

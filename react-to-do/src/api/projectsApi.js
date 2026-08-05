@@ -55,7 +55,8 @@ export const updateProject = async (projectId, updatedData) => {
     const updateResponseData = await updateResponse.json();
 
     return {
-        success: updateResponseData.success
+        success: updateResponseData.success,
+        projectDetails: updateResponseData.data
     };
 };
 
