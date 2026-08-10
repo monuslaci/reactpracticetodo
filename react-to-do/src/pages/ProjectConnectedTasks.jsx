@@ -196,8 +196,8 @@ const ProjectConnectedTasks = (item) => {
             <div className="hidden lg:block">
                 <LeftNavBar />
             </div>
-                   <div className="flex min-w-0 flex-1 flex-col mt-30">
-                        <form onSubmit={handleSubmit} className="flex w-full flex-1 items-center justify-center overflow-y-auto p-6 font-[var(--font-menu)]">
+                   <div className="flex min-w-0 flex-1 flex-col mt-30 overflow-y-auto">
+                        <form onSubmit={handleSubmit} className="flex w-full flex-1 items-center justify-center  p-6 font-[var(--font-menu)]">
                             {projectDetails && (
                                 <div className="w-full max-w-6xl rounded-lg bg-white p-6 shadow">
                                     <span className="mb-4 block text-[32px] font-semibold">
@@ -334,7 +334,7 @@ const ProjectConnectedTasks = (item) => {
                             )}
                         </form>
                         {!isCreate && (
-                            <form className="flex-1 overflow-y-auto font-[var(--font-menu)]">
+                            <form className="flex-1 font-[var(--font-menu)]">
                                 <span className="mb-4 mt-30 block text-lg font-semibold text-[32px]">
                                     Tasks connected to { projectDetails ? projectDetails.name : "this"} project
                                 </span>
