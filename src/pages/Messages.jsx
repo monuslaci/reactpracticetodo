@@ -12,7 +12,7 @@ import {
   seedMockUsers
 } from "../api/messagesApi.js";
 
-const formatMessageTime = (createdAt) => {
+const formatMessageTime = (createdAt) => { //formats Firestore-style timestamps
   const millis = createdAt?._seconds ? createdAt._seconds * 1000 : null;
 
   if (!millis) return "";
@@ -25,124 +25,126 @@ const formatMessageTime = (createdAt) => {
 
 const Messages = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [users, setUsers] = useState([]);
-  const [currentUserId, setCurrentUserId] = useState("");
-  const [selectedUserId, setSelectedUserId] = useState("");
-  const [activeRoom, setActiveRoom] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [draft, setDraft] = useState("");
-  const [error, setError] = useState("");
-  const [isLoadingUsers, setIsLoadingUsers] = useState(true);
-  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
-  const [socketStatus, setSocketStatus] = useState("offline");
-  const socketRef = useRef(null);
-  const activeRoomIdRef = useRef("");
-  const bottomRef = useRef(null);
+  const [users, setUsers] = useState([]); //all available users
+  const [currentUserId, setCurrentUserId] = useState(""); //the user currently pretending to be logged in
+  const [selectedUserId, setSelectedUserId] = useState(""); //the person being chatted with
+  const [activeRoom, setActiveRoom] = useState(null); //the chat room between the two users
+  const [messages, setMessages] = useState([]); //messages in the currently selected room
+  const [draft, setDraft] = useState(""); //text currently typed into the input
+  const [error, setError] = useState(""); //error messages
+  const [isLoadingUsers, setIsLoadingUsers] = useState(true); //indicates whether the list of users is still being loaded
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false); //indicates whether the messages for the selected room are still being loaded
+  const [socketStatus, setSocketStatus] = useState("offline"); //indicates whether the socket is connected or disconnected
+  const socketRef = useRef(null); //a ref to the socket instance, so it can be accessed in event handlers without needing to be in the dependency array of useEffect
+  const activeRoomIdRef = useRef(""); //a ref to the active room ID, so it can be accessed in the socket event handler without needing to be in the dependency array of useEffect
+  const bottomRef = useRef(null); //a ref to the bottom of the messages list, so it can be scrolled into view when new messages arrive
 
   const isSmallScreen = useMediaQuery({
     query: "(max-width: 1023px)"
   });
 
-  const currentUser = users.find((user) => user.id === currentUserId);
-  const selectedUser = users.find((user) => user.id === selectedUserId);
+  const currentUser = users.find((user) => user.id === currentUserId); //the user currently logged in
+  const selectedUser = users.find((user) => user.id === selectedUserId); //the person being chatted with
 
-  const availableUsers = useMemo(
+  const availableUsers = useMemo( //filters out the current user from the list of available users
     () => users.filter((user) => user.id !== currentUserId),
     [currentUserId, users]
   );
 
   useEffect(() => {
-    let isMounted = true;
+    let isMounted = true; //a flag to prevent state updates on unmounted components
 
-    const loadInitialUsers = async () => {
+    const loadInitialUsers = async () => { //loads the list of users when the component mounts
       try {
-        const loadedUsers = await getUsers();
+        const loadedUsers = await getUsers(); //fetches the list of users from the API
 
-        if (!isMounted) return;
+        if (!isMounted) return; //prevents state updates if the component has unmounted before the API call completes
 
-        setUsers(loadedUsers);
+        setUsers(loadedUsers); //sets the list of users in state
 
-        if (loadedUsers.length) {
+        if (loadedUsers.length) { //if there are any users, sets the first user as the current user
           setCurrentUserId(loadedUsers[0].id);
         }
       } catch (loadError) {
-        if (isMounted) {
-          setError(loadError.message);
+        if (isMounted) { //prevents state updates if the component has unmounted before the API call completes
+          setError(loadError.message); //sets the error message in state if the API call fails
         }
       } finally {
-        if (isMounted) {
-          setIsLoadingUsers(false);
+        if (isMounted) { //prevents state updates if the component has unmounted before the API call completes
+          setIsLoadingUsers(false); //indicates that the list of users has finished loading, regardless of whether it was successful or not
         }
       }
     };
 
-    loadInitialUsers();
+    loadInitialUsers(); //calls the function to load the initial list of users
 
     return () => {
-      isMounted = false;
+      isMounted = false; //sets the flag to false when the component unmounts, so that state updates are not attempted on an unmounted component
     };
   }, []);
 
   useEffect(() => {
-    if (!currentUserId) return undefined;
+    if (!currentUserId) return undefined; //if there is no current user, the socket connection is not established
 
-    socketRef.current?.disconnect();
+    socketRef.current?.disconnect(); //disconnects the previous socket connection if it exists, to prevent multiple connections from being open at the same time
 
-    const socket = io(SOCKET_URL, {
+    const socket = io(SOCKET_URL, { //creates a new socket connection
       auth: { userId: currentUserId }
     });
 
-    socketRef.current = socket;
+    socketRef.current = socket; //stores the socket instance in a ref, so it can be accessed in event handlers without needing to be in the dependency array of useEffect
 
-    socket.on("connect", () => {
+    socket.on("connect", () => { //sets the socket status to online when the connection is established
       setSocketStatus("online");
       setError("");
     });
 
-    socket.on("disconnect", () => {
+    socket.on("disconnect", () => { //sets the socket status to offline when the connection is lost
+      setError("Disconnected from server");
       setSocketStatus("offline");
     });
 
-    socket.on("connect_error", (socketError) => {
+    socket.on("connect_error", (socketError) => { //sets the socket status to offline and displays the error message when there is a connection error
+      setSocketStatus("offline");
+      setError(socketError.message); 
+    });
+
+    socket.on("socket:error", (socketError) => { //sets the socket status to offline and displays the error message when there is a socket error
       setSocketStatus("offline");
       setError(socketError.message);
     });
 
-    socket.on("socket:error", (socketError) => {
-      setError(socketError.message);
-    });
-
-    socket.on("message:new", (message) => {
+    socket.on("message:new", (message) => { //adds the new message to the list of messages if it belongs to the active room and is not a duplicate
       setMessages((currentMessages) => {
         if (message.roomId !== activeRoomIdRef.current) {
           return currentMessages;
         }
 
-        if (currentMessages.some((currentMessage) => currentMessage.id === message.id)) {
+        if (currentMessages.some((currentMessage) => currentMessage.id === message.id)) { //prevents duplicate messages from being added to the list of messages
           return currentMessages;
         }
 
-        return [...currentMessages, message];
+        return [...currentMessages, message]; //adds the new message to the list of messages if it belongs to the active room and is not a duplicate
       });
     });
 
     return () => {
-      socket.disconnect();
+      socket.disconnect(); //disconnects the socket connection when the component unmounts or when the current user changes, to prevent multiple connections from being open at the same time
     };
   }, [currentUserId]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" }); //scrolls to the bottom of the messages list when new messages arrive
   }, [messages]);
 
-  const handleSeedUsers = async () => {
+  const handleSeedUsers = async () => { //seeds the database with mock users when the "Seed Users" button is clicked
     setError("");
 
     try {
-      const seededUsers = await seedMockUsers();
+      const seededUsers = await seedMockUsers(); //calls the API to seed the database with mock users
       setUsers(seededUsers);
 
-      if (!currentUserId && seededUsers.length) {
+      if (!currentUserId && seededUsers.length) { //if there is no current user and there are seeded users, sets the first seeded user as the current user
         setCurrentUserId(seededUsers[0].id);
       }
     } catch (seedError) {
@@ -151,25 +153,27 @@ const Messages = () => {
   };
 
   const handleSelectUser = async (userId) => {
-    if (!currentUserId || userId === currentUserId) return;
+    if (!currentUserId || userId === currentUserId) return; //prevents selecting the current user or a user when there is no current user
 
-    setSelectedUserId(userId);
-    setMessages([]);
-    setIsLoadingMessages(true);
-    setError("");
+    setSelectedUserId(userId); //sets the selected user ID in state
+    // setActiveRoom(null); //clears the active room when a new user is selected
+    // activeRoomIdRef.current = ""; //clears the active room ID ref when a new user is selected
+    setMessages([]); //clears the list of messages when a new user is selected
+    setIsLoadingMessages(true); //indicates that the messages for the selected room are still being loaded
+    setError(""); //clears any previous error messages
 
     try {
-      if (activeRoom?.id) {
-        socketRef.current?.emit("room:leave", { roomId: activeRoom.id });
+      if (activeRoom?.id) { //if there is an active room, leaves the room before joining a new one
+        socketRef.current?.emit("room:leave", { roomId: activeRoom.id }); //emits a "room:leave" event to the server to leave the current room
       }
 
-      const room = await createDirectRoom([currentUserId, userId]);
-      setActiveRoom(room);
-      activeRoomIdRef.current = room.id;
-      socketRef.current?.emit("room:join", { roomId: room.id });
+      const room = await createDirectRoom([currentUserId, userId]); //calls the API to create a direct room between the current user and the selected user
+      setActiveRoom(room); //sets the active room in state
+      activeRoomIdRef.current = room.id; //sets the active room ID ref to the new room ID, so it can be accessed in the socket event handler without needing to be in the dependency array of useEffect
+      socketRef.current?.emit("room:join", { roomId: room.id }); //emits a "room:join" event to the server to join the new room
 
-      const roomMessages = await getRoomMessages(room.id, currentUserId);
-      setMessages(roomMessages);
+      const roomMessages = await getRoomMessages(room.id, currentUserId); //calls the API to get the messages for the new room
+      setMessages(roomMessages); //sets the list of messages in state to the messages for the new room
     } catch (selectError) {
       setError(selectError.message);
     } finally {
@@ -178,12 +182,12 @@ const Messages = () => {
   };
 
   const handleSendMessage = (event) => {
-    event.preventDefault();
+    event.preventDefault(); //
 
-    if (!draft.trim() || !activeRoom || socketStatus !== "online") return;
+    if (!draft.trim() || !activeRoom || socketStatus !== "online") return; //prevents sending a message if the draft is empty, there is no active room, or the socket is not connected
 
     socketRef.current?.emit("message:send", {
-      roomId: activeRoom.id,
+      roomId: activeRoom.id, //emits a "message:send" event to the server to send the message
       text: draft.trim()
     });
     setDraft("");
