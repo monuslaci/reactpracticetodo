@@ -38,6 +38,7 @@ const Messages = () => {
   const socketRef = useRef(null); //a ref to the socket instance, so it can be accessed in event handlers without needing to be in the dependency array of useEffect
   const activeRoomIdRef = useRef(""); //a ref to the active room ID, so it can be accessed in the socket event handler without needing to be in the dependency array of useEffect
   const bottomRef = useRef(null); //a ref to the bottom of the messages list, so it can be scrolled into view when new messages arrive
+  const [isOtherUserTyping, setIsOtherUserTyping] = useState(false); //indicates whether the other user is currently typing
 
   const isSmallScreen = useMediaQuery({
     query: "(max-width: 1023px)"
@@ -128,6 +129,12 @@ const Messages = () => {
       });
     });
 
+    socket.on("typing:update", ({ roomId, userId, isTyping }) => { //updates the typing indicator if the other user is typing in the active room
+      if (roomId === activeRoomIdRef.current && userId !== currentUserId) {
+        setIsOtherUserTyping(isTyping);
+      }
+    });
+
     return () => {
       socket.disconnect(); //disconnects the socket connection when the component unmounts or when the current user changes, to prevent multiple connections from being open at the same time
     };
@@ -190,8 +197,30 @@ const Messages = () => {
       roomId: activeRoom.id, //emits a "message:send" event to the server to send the message
       text: draft.trim()
     });
+    socketRef.current?.emit("typing:stop", {
+      roomId: activeRoom.id
+    });
     setDraft("");
   };
+
+  const handleTyping = (event) => {
+    const value = event.target.value;
+    setDraft(value);
+
+    if (!activeRoom || socketStatus !== "online") return; //prevents sending a "typing:start" event if there is no active room or the socket is not connected
+ 
+    if (value.trim()) {
+      socketRef.current?.emit("typing:start", { roomId: activeRoom.id });
+    } else {
+      socketRef.current?.emit("typing:stop", { roomId: activeRoom.id });
+    }
+  };
+
+  const handleTypingStop = () => {
+    if (!activeRoom || socketStatus !== "online") return; //prevents sending a "typing:stop" event if there is no active room or the socket is not connected
+
+    socketRef.current?.emit("typing:stop", { roomId: activeRoom.id });
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#F6F5F8]">
@@ -374,12 +403,17 @@ const Messages = () => {
                     </div>
                   )}
                 </div>
-
+                  {isOtherUserTyping && (
+                    <p className="text-xs text-[#747474]">
+                      {selectedUser?.displayName} is typing...
+                    </p>
+                  )}
                 <form className="flex items-center gap-3 border-t border-[#E7E6EB] bg-white p-4" onSubmit={handleSendMessage}>
                   <input
                     className="h-11 min-w-0 flex-1 rounded-lg border border-[#E7E6EB] px-4 text-sm text-[#08060d] outline-none focus:border-[#916EE8]"
                     value={draft}
-                    onChange={(event) => setDraft(event.target.value)}
+                    onChange={(event) => { handleTyping(event); }}       
+                    onBlur={() => {handleTypingStop(); }} //sends a "typing:stop" event when the input loses focus
                     placeholder={selectedUser ? "Write a message" : "Select a user first"}
                     disabled={!selectedUser || socketStatus !== "online"}
                   />
