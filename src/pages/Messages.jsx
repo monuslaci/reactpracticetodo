@@ -292,24 +292,42 @@ const Messages = () => {
     setDraft("");
   };
 
-  const handleTyping = (event) => { 
+  const handleTyping = (event) => { //handles typing in the message input field, and emits "typing:start" and "typing:stop" events to the server when the user starts and stops typing
     const value = event.target.value;
+
     setDraft(value);
 
-    if (!activeRoom || socketStatus !== "online") return; //prevents sending a "typing:start" event if there is no active room or the socket is not connected
- 
-    if (value.trim()) {
-      socketRef.current?.emit("typing:start", { roomId: activeRoom.id }); //emits a "typing:start" event to the server to indicate that the user is typing
-    } else {
-      socketRef.current?.emit("typing:stop", { roomId: activeRoom.id }); //emits a "typing:stop" event to the server to indicate that the user has stopped typing
+    if (!activeRoom || socketStatus !== "online") return;
+
+    if (value.trim() && !isTypingRef.current) { //if the user starts typing and is not already marked as typing, emits a "typing:start" event to the server
+      socketRef.current?.emit("typing:start", {
+        roomId: activeRoom.id
+      });
+
+      isTypingRef.current = true;
+    }
+
+    if (!value.trim() && isTypingRef.current) { //if the user stops typing and is currently marked as typing, emits a "typing:stop" event to the server
+      socketRef.current?.emit("typing:stop", {
+        roomId: activeRoom.id
+      });
+
+      isTypingRef.current = false;
     }
   };
-
   const handleTypingStop = () => {
-    if (!activeRoom || socketStatus !== "online") return; //prevents sending a "typing:stop" event if there is no active room or the socket is not connected
+    if (
+      activeRoom &&
+      socketStatus === "online" && 
+      isTypingRef.current
+    ) {
+      socketRef.current.emit("typing:stop", { //emits a "typing:stop" event to the server when the user stops typing
+        roomId: activeRoom.id
+      });
 
-    socketRef.current?.emit("typing:stop", { roomId: activeRoom.id });
-  }
+      isTypingRef.current = false;
+    }
+  };
 
   const handleCreateGroup = async () => {
     if (!groupName.trim() || !selectedGroupUserIds.length) {
@@ -684,14 +702,14 @@ const Messages = () => {
                             className={`flex ${isMine ? "justify-end" : "justify-start"}`}
                           >
                             <div
-                              className={`max-w-[75%] rounded-2xl px-4 py-3 ${
-                                isMine
-                                  ? "bg-[#916EE8] text-white"
-                                  : "border border-[#E7E6EB] bg-white text-[#08060d]"
-                              }`}
+                                className={`max-w-[75%] rounded-2xl px-4 py-3 ${
+                                  isMine
+                                    ? "bg-[#916EE8] text-white"
+                                    : "border border-[#E7E6EB] bg-white text-[#08060d]"
+                                }`}
                             >
                               {activeRoom?.type === "group" && (
-                                <p className="mb-1 text-xs font-semibold text-[#916EE8]">
+                                <p className={`mb-1 text-xs font-semibold ${isMine ? "text-white" : "text-[#916EE8]"}`}>
                                   {senderName}
                                 </p>
                               )}
