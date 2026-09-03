@@ -135,6 +135,22 @@ const Messages = () => {
       }
     });
 
+    socket.on("message:read",({ roomId, messageId, userId, message }) => {
+        if (
+          roomId === activeRoomIdRef.current &&
+          userId !== currentUserId
+        ) {
+          setMessages((currentMessages) =>
+            currentMessages.map((currentMessage) =>
+              currentMessage.id === messageId
+                ? { ...currentMessage, ...message }
+                : currentMessage
+            )
+          );
+        }
+      }
+    );
+
     return () => {
       socket.disconnect(); //disconnects the socket connection when the component unmounts or when the current user changes, to prevent multiple connections from being open at the same time
     };
@@ -143,6 +159,21 @@ const Messages = () => {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" }); //scrolls to the bottom of the messages list when new messages arrive
   }, [messages]);
+
+  useEffect(() => { //marks all messages in the active room as read when the active room changes or when new messages arrive
+  if (!activeRoom?.id || socketStatus !== "online") return;
+
+  messages.forEach((message) => {
+    const alreadyRead = message.readBy?.includes(currentUserId);
+
+    if (message.senderId !== currentUserId && !alreadyRead) {
+      socketRef.current?.emit("message:read", {
+        roomId: activeRoom.id,
+        messageId: message.id
+      });
+    }
+  });
+}, [messages, activeRoom?.id, currentUserId, socketStatus]);
 
   const handleSeedUsers = async () => { //seeds the database with mock users when the "Seed Users" button is clicked
     setError("");
@@ -185,6 +216,7 @@ const Messages = () => {
       setError(selectError.message);
     } finally {
       setIsLoadingMessages(false);
+      setIsOtherUserTyping(false);
     }
   };
 
@@ -203,16 +235,16 @@ const Messages = () => {
     setDraft("");
   };
 
-  const handleTyping = (event) => {
+  const handleTyping = (event) => { 
     const value = event.target.value;
     setDraft(value);
 
     if (!activeRoom || socketStatus !== "online") return; //prevents sending a "typing:start" event if there is no active room or the socket is not connected
  
     if (value.trim()) {
-      socketRef.current?.emit("typing:start", { roomId: activeRoom.id });
+      socketRef.current?.emit("typing:start", { roomId: activeRoom.id }); //emits a "typing:start" event to the server to indicate that the user is typing
     } else {
-      socketRef.current?.emit("typing:stop", { roomId: activeRoom.id });
+      socketRef.current?.emit("typing:stop", { roomId: activeRoom.id }); //emits a "typing:stop" event to the server to indicate that the user has stopped typing
     }
   };
 
@@ -392,13 +424,27 @@ const Messages = () => {
                               }`}
                             >
                               <p className="break-words text-sm">{message.text}</p>
-                              <p className={`mt-1 text-[11px] ${isMine ? "text-white/75" : "text-[#747474]"}`}>
-                                {formatMessageTime(message.createdAt)}
-                              </p>
+
+                              <div className="mt-1 flex items-center gap-2">
+                                <p
+                                  className={`text-[11px] ${
+                                    isMine ? "text-white/75" : "text-[#747474]"
+                                  }`}
+                                >
+                                  {formatMessageTime(message.createdAt)}
+                                </p>
+
+                                {isMine && (
+                                  <span className="text-[11px] text-white/75">
+                                    {message.readBy?.includes(selectedUserId) ? "Read" : "Sent"}
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </div>
                         );
                       })}
+
                       <div ref={bottomRef} />
                     </div>
                   )}
