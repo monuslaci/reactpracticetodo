@@ -7,10 +7,13 @@ import SearchBar from "../components/SearchBar.jsx";
 import {
   SOCKET_URL,
   createDirectRoom,
+  createGroupRoom,
   getRoomMessages,
   getUsers,
-  seedMockUsers
+  seedMockUsers,
+  getRooms
 } from "../api/messagesApi.js";
+import Select from "react-select";
 
 const formatMessageTime = (createdAt) => { //formats Firestore-style timestamps
   const millis = createdAt?._seconds ? createdAt._seconds * 1000 : null;
@@ -39,6 +42,10 @@ const Messages = () => {
   const activeRoomIdRef = useRef(""); //a ref to the active room ID, so it can be accessed in the socket event handler without needing to be in the dependency array of useEffect
   const bottomRef = useRef(null); //a ref to the bottom of the messages list, so it can be scrolled into view when new messages arrive
   const [isOtherUserTyping, setIsOtherUserTyping] = useState(false); //indicates whether the other user is currently typing
+  const [isGroupModalOpen, setIsGroupModalOpen] = useState(false); //indicates whether the modal for creating a group chat is open
+  const [groupName, setGroupName] = useState(""); //the name of the group chat being created
+  const [selectedGroupUserIds, setSelectedGroupUserIds] = useState([]); //the IDs of the users selected to be in the group chat being created
+  const [rooms, setRooms] = useState([]);
 
   const isSmallScreen = useMediaQuery({
     query: "(max-width: 1023px)"
@@ -50,6 +57,15 @@ const Messages = () => {
   const availableUsers = useMemo( //filters out the current user from the list of available users
     () => users.filter((user) => user.id !== currentUserId),
     [currentUserId, users]
+  );
+
+  const groupUserOptions = useMemo(
+  () =>
+      users.map((user) => ({
+        value: user.id,
+        label: user.displayName
+      })),
+    [users]
   );
 
   useEffect(() => {
@@ -115,18 +131,42 @@ const Messages = () => {
       setError(socketError.message);
     });
 
-    socket.on("message:new", (message) => { //adds the new message to the list of messages if it belongs to the active room and is not a duplicate
+    socket.on("message:new", (message) => {
       setMessages((currentMessages) => {
         if (message.roomId !== activeRoomIdRef.current) {
           return currentMessages;
         }
 
-        if (currentMessages.some((currentMessage) => currentMessage.id === message.id)) { //prevents duplicate messages from being added to the list of messages
+        if (
+          currentMessages.some(
+            (currentMessage) => currentMessage.id === message.id
+          )
+        ) {
           return currentMessages;
         }
 
-        return [...currentMessages, message]; //adds the new message to the list of messages if it belongs to the active room and is not a duplicate
+        return [...currentMessages, message];
       });
+
+      setRooms((currentRooms) =>
+        currentRooms.map((room) => {
+          if (room.id !== message.roomId) {
+            return room;
+          }
+
+          const isActiveRoom =
+            message.roomId === activeRoomIdRef.current;
+
+          return {
+            ...room,
+            lastMessage: message,
+            unreadCount:
+              message.senderId === currentUserId || isActiveRoom
+                ? 0
+                : (room.unreadCount || 0) + 1
+          };
+        })
+      );
     });
 
     socket.on("typing:update", ({ roomId, userId, isTyping }) => { //updates the typing indicator if the other user is typing in the active room
@@ -171,9 +211,20 @@ const Messages = () => {
         roomId: activeRoom.id,
         messageId: message.id
       });
-    }
-  });
-}, [messages, activeRoom?.id, currentUserId, socketStatus]);
+        }
+      });
+    }, [messages, activeRoom?.id, currentUserId, socketStatus]);
+
+    useEffect(() => { //loads the list of rooms when the current user changes
+      if (!currentUserId) return;
+
+      const loadRooms = async () => {
+        const loadedRooms = await getRooms(currentUserId);
+        setRooms(loadedRooms);
+      };
+
+      loadRooms();
+    }, [currentUserId]);
 
   const handleSeedUsers = async () => { //seeds the database with mock users when the "Seed Users" button is clicked
     setError("");
@@ -206,6 +257,12 @@ const Messages = () => {
       }
 
       const room = await createDirectRoom([currentUserId, userId]); //calls the API to create a direct room between the current user and the selected user
+      setRooms((currentRooms) => [ //adds the new room to the list of rooms in state, and removes any previous room with the same ID to prevent duplicates
+        room,
+        ...currentRooms.filter(
+          (currentRoom) => currentRoom.id !== room.id
+        )
+      ]);
       setActiveRoom(room); //sets the active room in state
       activeRoomIdRef.current = room.id; //sets the active room ID ref to the new room ID, so it can be accessed in the socket event handler without needing to be in the dependency array of useEffect
       socketRef.current?.emit("room:join", { roomId: room.id }); //emits a "room:join" event to the server to join the new room
@@ -253,6 +310,124 @@ const Messages = () => {
 
     socketRef.current?.emit("typing:stop", { roomId: activeRoom.id });
   }
+
+  const handleCreateGroup = async () => {
+    if (!groupName.trim() || !selectedGroupUserIds.length) {
+      setError("Enter a group name and select at least one user.");
+      return;
+    }
+
+    try {
+      setError("");
+
+      const room = await createGroupRoom({ //calls the API to create a new group room with the specified name and participants
+        name: groupName.trim(),
+        participantIds: [
+          currentUserId,
+          ...selectedGroupUserIds
+        ],
+        createdBy: currentUserId
+      });
+
+      setRooms((currentRooms) => [ //sets the list of rooms in state to include the new group room, and removes any previous room with the same ID to prevent duplicates
+        room,
+        ...currentRooms.filter(
+          (currentRoom) => currentRoom.id !== room.id
+        )
+      ]);
+
+      setActiveRoom(room);
+      activeRoomIdRef.current = room.id;
+      setSelectedUserId("");
+      setMessages([]);
+
+      socketRef.current?.emit("room:join", { //emits a "room:join" event to the server to join the new group room
+        roomId: room.id
+      });
+
+      const roomMessages = await getRoomMessages(
+        room.id,
+        currentUserId
+      );
+
+      setMessages(roomMessages); //sets the list of messages in state to the messages for the new group room
+
+      setGroupName("");
+      setSelectedGroupUserIds([]);
+      setIsGroupModalOpen(false);
+    } catch (createError) {
+      setError(createError.message);
+    }
+  };
+
+  const getRoomTitle = (room) => {  //returns the title of the room, which is either the group name or the display name of the other user in a direct chat
+    if (room.type === "group") {
+      return room.name;
+    }
+
+    const otherUser = users.find( //finds the other user in a direct chat by filtering out the current user from the list of participants
+      (user) =>
+        room.participantIds?.includes(user.id) &&
+        user.id !== currentUserId
+    );
+
+    return otherUser?.displayName || "Direct chat";
+  };
+
+
+
+  const handleSelectRoom = async (room) => { //handles selecting a room from the list of rooms, and loads the messages for that room
+    if (!room?.id || !currentUserId) return;
+
+    if (activeRoom?.id && activeRoom.id !== room.id) {
+      socketRef.current?.emit("room:leave", {
+        roomId: activeRoom.id
+      });
+    }
+
+    setActiveRoom(room);
+    activeRoomIdRef.current = room.id;
+    setMessages([]);
+    setIsLoadingMessages(true);
+    setIsOtherUserTyping(false);
+    setError("");
+
+    setRooms((currentRooms) => //updates the list of rooms in state to set the unread count for the selected room to 0
+      currentRooms.map((currentRoom) =>
+        currentRoom.id === room.id
+          ? { ...currentRoom, unreadCount: 0 }
+          : currentRoom
+      )
+    );
+
+    if (room.type === "direct") { //if the selected room is a direct chat, finds the other user in the chat and sets the selected user ID in state
+      const otherUserId = room.participantIds?.find(
+        (participantId) => participantId !== currentUserId
+      );
+
+      setSelectedUserId(otherUserId || "");
+    } else {
+      setSelectedUserId("");
+    }
+
+    try {
+      socketRef.current?.emit("room:join", {
+        roomId: room.id
+      });
+
+      const roomMessages = await getRoomMessages(
+        room.id,
+        currentUserId
+      );
+
+      setMessages(roomMessages);
+    } catch (selectError) {
+      setError(selectError.message);
+    } finally {
+      setIsLoadingMessages(false);
+    }
+  };
+
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#F6F5F8]">
@@ -312,11 +487,70 @@ const Messages = () => {
                 <button
                   type="button"
                   className="inline-flex h-10 items-center gap-2 rounded-lg bg-[#916EE8] px-4 text-sm font-medium text-white"
-                  onClick={() => window.alert("Group messaging will be added after 1-to-1 chat is stable.")}
-                >
+                    onClick={() => setIsGroupModalOpen(true)}
+                    >
                   <FaPlus className="text-xs" />
                   Create Group
                 </button>
+                {isGroupModalOpen && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+                    <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+                      <div className="mb-4 flex items-center justify-between">
+                        <h2 className="text-lg font-semibold">Create group</h2>
+
+                        <button
+                          type="button"
+                          onClick={() => setIsGroupModalOpen(false)}
+                          className="text-xl text-gray-500"
+                        >
+                          <FaTimes />
+                        </button>
+                      </div>
+
+                      <input
+                        className="mb-4 h-10 w-full rounded-lg border px-3 text-sm"
+                        value={groupName}
+                        onChange={(event) => setGroupName(event.target.value)}
+                        placeholder="Group name"
+                      />
+
+                      <div className="mb-5">
+                        <Select
+                          isMulti
+                          options={groupUserOptions}
+                          value={groupUserOptions.filter((option) =>
+                            selectedGroupUserIds.includes(option.value)
+                          )}
+                          onChange={(selectedOptions) => {
+                            setSelectedGroupUserIds(
+                              (selectedOptions ?? []).map((option) => option.value)
+                            );
+                          }}
+                          isLoading={isLoadingUsers}
+                          closeMenuOnSelect={false}
+                          placeholder="Select group members..."
+                          noOptionsMessage={() => "No users found"}
+                          menuPortalTarget={document.body}
+                          menuPosition="fixed"
+                          styles={{
+                            menuPortal: (base) => ({
+                              ...base,
+                              zIndex: 9999
+                            })
+                          }}
+                        />
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={handleCreateGroup}
+                        className="w-full rounded-lg bg-[#916EE8] px-4 py-2 text-sm text-white"
+                      >
+                        Create group
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -331,7 +565,7 @@ const Messages = () => {
                 <div className="flex items-center justify-between border-b border-[#E7E6EB] px-4 py-4">
                   <div className="flex items-center gap-2 text-sm font-semibold text-[#08060d]">
                     <FaUsers className="text-[#916EE8]" />
-                    People
+                    Chats
                   </div>
 
                   <button
@@ -347,39 +581,49 @@ const Messages = () => {
                   {isLoadingUsers && <p className="px-4 py-4 text-sm text-[#747474]">Loading users...</p>}
 
                   {!isLoadingUsers &&
-                    availableUsers.map((user) => {
-                      const isSelected = user.id === selectedUserId;
+                      rooms.map((room) => {
+                      const otherUser = users.find(
+                        (user) =>
+                          room.type === "direct" &&
+                          room.participantIds?.includes(user.id) &&
+                          user.id !== currentUserId
+                      );
+
+                      const title =
+                        room.type === "group"
+                          ? room.name
+                          : otherUser?.displayName || "Direct chat";
 
                       return (
                         <button
-                          key={user.id}
+                          key={room.id}
                           type="button"
-                          className={`flex w-full items-center gap-3 border-b border-[#F0EFF3] px-4 py-3 text-left ${
-                            isSelected ? "bg-[#F6F2FF]" : "bg-white"
-                          }`}
-                          onClick={() => handleSelectUser(user.id)}
+                          onClick={() => handleSelectRoom(room)}
+                          className="flex w-full items-center gap-3 border-b px-4 py-3 text-left"
                         >
-                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#E7E6EB] text-sm font-semibold text-[#08060d]">
-                            {user.displayName?.charAt(0) || "U"}
+                          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E7E6EB]">
+                            {title.charAt(0)}
                           </span>
 
-                          <span className="min-w-0 flex-1">
-                            <span className="block truncate text-sm font-semibold text-[#08060d]">
-                              {user.displayName}
+                          <span>
+                            <span className="block text-sm font-semibold">
+                              {title}
                             </span>
-                            <span className="block truncate text-xs text-[#747474]">{user.email}</span>
-                          </span>
 
-                          <span
-                            className={`h-2.5 w-2.5 rounded-full ${
-                              user.status === "online" ? "bg-[#00C61F]" : "bg-[#A1A3AB]"
-                            }`}
-                          />
+                            <span className="block text-xs text-[#747474]">
+                              {room.lastMessage?.text || "No messages yet"}
+                            </span>
+                            {room.unreadCount > 0 && (
+                              <span className="rounded-full bg-[#916EE8] px-2 py-1 text-xs text-white">
+                                {room.unreadCount}
+                              </span>
+                            )}
+                          </span>
                         </button>
                       );
                     })}
 
-                  {!isLoadingUsers && !availableUsers.length && (
+                  {!isLoadingUsers && !rooms.length && (
                     <p className="px-4 py-4 text-sm text-[#747474]">Seed users to start a chat.</p>
                   )}
                 </div>
@@ -389,27 +633,50 @@ const Messages = () => {
                 <header className="flex min-h-18 items-center justify-between border-b border-[#E7E6EB] px-5 py-4">
                   <div className="min-w-0">
                     <p className="truncate text-base font-semibold text-[#08060d]">
-                      {selectedUser ? selectedUser.displayName : "Select a person"}
+                      {activeRoom?.type === "group"
+                      ? activeRoom.name
+                      : selectedUser?.displayName || "Select a person"}
                     </p>
                     <p className="text-xs text-[#747474]">Socket: {socketStatus}</p>
                   </div>
                 </header>
 
                 <div className="flex-1 overflow-y-auto bg-[#FBFAFD] px-5 py-5">
-                  {!selectedUser && (
+                  {!activeRoom && (
                     <div className="flex h-full items-center justify-center text-center text-sm text-[#747474]">
                       Choose a user from the list to start a 1-to-1 conversation.
                     </div>
                   )}
 
-                  {selectedUser && isLoadingMessages && (
+                  {activeRoom && isLoadingMessages && (
                     <p className="text-sm text-[#747474]">Loading messages...</p>
                   )}
 
-                  {selectedUser && !isLoadingMessages && (
+                  {activeRoom && !isLoadingMessages && (
                     <div className="flex flex-col gap-3">
                       {messages.map((message) => {
                         const isMine = message.senderId === currentUserId;
+                        const otherParticipantIds =
+                        activeRoom?.participantIds?.filter(
+                          (participantId) => participantId !== currentUserId
+                        ) || [];
+
+                        const isRead = activeRoom?.type === "group"
+                          ? otherParticipantIds.length > 0 &&
+                            otherParticipantIds.every((participantId) =>
+                              message.readBy?.includes(participantId)
+                            )
+                          : message.readBy?.includes(selectedUserId);
+
+                          const sender = users.find(
+                            (user) => user.id === message.senderId
+                          );
+
+                          const senderName =
+                            message.senderId === currentUserId
+                              ? "You"
+                              : sender?.displayName || "Unknown user";
+
 
                         return (
                           <div
@@ -423,6 +690,11 @@ const Messages = () => {
                                   : "border border-[#E7E6EB] bg-white text-[#08060d]"
                               }`}
                             >
+                              {activeRoom?.type === "group" && (
+                                <p className="mb-1 text-xs font-semibold text-[#916EE8]">
+                                  {senderName}
+                                </p>
+                              )}
                               <p className="break-words text-sm">{message.text}</p>
 
                               <div className="mt-1 flex items-center gap-2">
@@ -436,7 +708,7 @@ const Messages = () => {
 
                                 {isMine && (
                                   <span className="text-[11px] text-white/75">
-                                    {message.readBy?.includes(selectedUserId) ? "Read" : "Sent"}
+                                    {isRead ? "Read" : "Sent"}
                                   </span>
                                 )}
                               </div>
@@ -451,7 +723,9 @@ const Messages = () => {
                 </div>
                   {isOtherUserTyping && (
                     <p className="text-xs text-[#747474]">
-                      {selectedUser?.displayName} is typing...
+                      {activeRoom?.type === "group"
+                        ? "Someone is typing..."
+                        : `${selectedUser?.displayName} is typing...`}
                     </p>
                   )}
                 <form className="flex items-center gap-3 border-t border-[#E7E6EB] bg-white p-4" onSubmit={handleSendMessage}>
@@ -460,14 +734,14 @@ const Messages = () => {
                     value={draft}
                     onChange={(event) => { handleTyping(event); }}       
                     onBlur={() => {handleTypingStop(); }} //sends a "typing:stop" event when the input loses focus
-                    placeholder={selectedUser ? "Write a message" : "Select a user first"}
-                    disabled={!selectedUser || socketStatus !== "online"}
+                    placeholder={activeRoom ? "Write a message" : "Select a user first"}
+                    disabled={!activeRoom || socketStatus !== "online"}
                   />
 
                   <button
                     type="submit"
                     className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#916EE8] text-white disabled:cursor-not-allowed disabled:bg-[#C9C1DD]"
-                    disabled={!draft.trim() || !selectedUser || socketStatus !== "online"}
+                    disabled={!draft.trim() || !activeRoom || socketStatus !== "online"}
                     aria-label="Send message"
                   >
                     <FaPaperPlane className="text-sm" />

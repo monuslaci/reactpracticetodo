@@ -44,3 +44,26 @@ export const getRoomMessages = async (roomId, userId) => {
   const response = await request(`/rooms/${roomId}/messages?${query.toString()}`);
   return response.data;
 };
+
+export const createGroupRoom = async ({
+  name,
+  participantIds,
+  createdBy
+}) => {
+  const response = await request("/rooms/group", {
+    method: "POST",
+    body: JSON.stringify({
+      name,
+      participantIds,
+      createdBy
+    })
+  });
+
+  return response.data;
+};
+
+export const getRooms = async (userId) => {
+  const query = new URLSearchParams({ userId });
+  const response = await request(`/rooms?${query.toString()}`);
+  return response.data;
+};
