@@ -239,7 +239,7 @@ const Messages = () => {
         handleVisibilityChange
       );
 
-      return () => {
+      return () => { //removes the event listener when the component unmounts, to prevent memory leaks and unnecessary event handling
         document.removeEventListener(
           "visibilitychange",
           handleVisibilityChange
@@ -469,15 +469,15 @@ const Messages = () => {
 
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#F6F5F8]">
+    <div className="flex min-h-screen overflow-x-hidden bg-[#F6F5F8] lg:h-screen lg:overflow-hidden">
       <div className="hidden lg:block">
         <LeftNavBar />
       </div>
 
-      <main className="flex-1 overflow-y-auto">
-        <div className="mx-auto flex h-full w-full max-w-277.75 flex-col px-4">
+      <main className="min-w-0 flex-1 overflow-y-auto">
+        <div className="mx-auto flex min-h-full w-full max-w-277.75 flex-col px-3 sm:px-4">
           {isSmallScreen && (
-            <div className="flex justify-start mt-4">
+            <div className="mt-3 flex justify-start sm:mt-4">
               <button
                 type="button"
                 className="text-2xl"
@@ -495,7 +495,7 @@ const Messages = () => {
           <section className="mb-6 flex min-h-0 flex-1 flex-col gap-4 text-left">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h1 className="m-0 text-[28px] font-[var(--font-menu)] text-[#08060d]">
+                <h1 className="m-0 text-2xl font-[var(--font-menu)] text-[#08060d] sm:text-[28px]">
                   Messages
                 </h1>
                 <p className="text-sm text-[#747474]">
@@ -503,9 +503,9 @@ const Messages = () => {
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
                 <select
-                  className="h-10 rounded-lg border border-[#E7E6EB] bg-white px-3 text-sm text-[#08060d]"
+                  className="h-10 w-full rounded-lg border border-[#E7E6EB] bg-white px-3 text-sm text-[#08060d] sm:w-auto"
                   value={currentUserId}
                   onChange={(event) => {
                     setCurrentUserId(event.target.value);
@@ -525,7 +525,7 @@ const Messages = () => {
 
                 <button
                   type="button"
-                  className="inline-flex h-10 items-center gap-2 rounded-lg bg-[#916EE8] px-4 text-sm font-medium text-white"
+                  className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-[#916EE8] px-4 text-sm font-medium text-white sm:w-auto"
                     onClick={() => setIsGroupModalOpen(true)}
                     >
                   <FaPlus className="text-xs" />
@@ -599,8 +599,8 @@ const Messages = () => {
               </div>
             )}
 
-            <div className="grid min-h-0 flex-1 grid-cols-1 overflow-hidden rounded-2xl bg-white lg:grid-cols-[310px_1fr]">
-              <aside className="min-h-[220px] border-b border-[#E7E6EB] lg:border-b-0 lg:border-r">
+            <div className="grid min-h-0 flex-1 grid-cols-1 overflow-hidden rounded-2xl bg-white lg:grid-cols-[310px_minmax(0,1fr)]">
+              <aside className="min-h-0 border-b border-[#E7E6EB] lg:border-b-0 lg:border-r">
                 <div className="flex items-center justify-between border-b border-[#E7E6EB] px-4 py-4">
                   <div className="flex items-center gap-2 text-sm font-semibold text-[#08060d]">
                     <FaUsers className="text-[#916EE8]" />
@@ -616,7 +616,7 @@ const Messages = () => {
                   </button>
                 </div>
 
-                <div className="max-h-[280px] overflow-y-auto lg:max-h-none">
+                <div className="max-h-52 overflow-y-auto sm:max-h-[280px] lg:max-h-none">
                   {isLoadingUsers && <p className="px-4 py-4 text-sm text-[#747474]">Loading users...</p>}
 
                   {!isLoadingUsers &&
@@ -668,8 +668,8 @@ const Messages = () => {
                 </div>
               </aside>
 
-              <div className="flex min-h-[520px] min-w-0 flex-col">
-                <header className="flex min-h-18 items-center justify-between border-b border-[#E7E6EB] px-5 py-4">
+              <div className="flex min-h-[420px] min-w-0 flex-col sm:min-h-[520px] lg:min-h-0">
+                <header className="flex min-h-18 items-center justify-between border-b border-[#E7E6EB] px-4 py-4 sm:px-5">
                   <div className="min-w-0">
                     <p className="truncate text-base font-semibold text-[#08060d]">
                       {activeRoom?.type === "group"
@@ -680,7 +680,7 @@ const Messages = () => {
                   </div>
                 </header>
 
-                <div className="flex-1 overflow-y-auto bg-[#FBFAFD] px-5 py-5">
+                <div className="min-h-0 flex-1 overflow-y-auto bg-[#FBFAFD] px-3 py-4 sm:px-5 sm:py-5">
                   {!activeRoom && (
                     <div className="flex h-full items-center justify-center text-center text-sm text-[#747474]">
                       Choose a user from the list to start a 1-to-1 conversation.
@@ -767,9 +767,9 @@ const Messages = () => {
                         : `${selectedUser?.displayName} is typing...`}
                     </p>
                   )}
-                <form className="flex items-center gap-3 border-t border-[#E7E6EB] bg-white p-4" onSubmit={handleSendMessage}>
+                <form className="flex items-center gap-2 border-t border-[#E7E6EB] bg-white p-3 sm:gap-3 sm:p-4" onSubmit={handleSendMessage}>
                   <input
-                    className="h-11 min-w-0 flex-1 rounded-lg border border-[#E7E6EB] px-4 text-sm text-[#08060d] outline-none focus:border-[#916EE8]"
+                    className="h-10 min-w-0 flex-1 rounded-lg border border-[#E7E6EB] px-3 text-sm text-[#08060d] outline-none focus:border-[#916EE8] sm:h-11 sm:px-4"
                     value={draft}
                     onChange={(event) => { handleTyping(event); }}       
                     onBlur={() => {handleTypingStop(); }} //sends a "typing:stop" event when the input loses focus
@@ -779,7 +779,7 @@ const Messages = () => {
 
                   <button
                     type="submit"
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#916EE8] text-white disabled:cursor-not-allowed disabled:bg-[#C9C1DD]"
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#916EE8] text-white disabled:cursor-not-allowed disabled:bg-[#C9C1DD] sm:h-11 sm:w-11"
                     disabled={!draft.trim() || !activeRoom || socketStatus !== "online"}
                     aria-label="Send message"
                   >
