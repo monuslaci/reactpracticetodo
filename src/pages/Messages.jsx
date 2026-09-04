@@ -41,6 +41,7 @@ const Messages = () => {
   const socketRef = useRef(null); //a ref to the socket instance, so it can be accessed in event handlers without needing to be in the dependency array of useEffect
   const activeRoomIdRef = useRef(""); //a ref to the active room ID, so it can be accessed in the socket event handler without needing to be in the dependency array of useEffect
   const bottomRef = useRef(null); //a ref to the bottom of the messages list, so it can be scrolled into view when new messages arrive
+  const isTypingRef = useRef(false);
   const [isOtherUserTyping, setIsOtherUserTyping] = useState(false); //indicates whether the other user is currently typing
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false); //indicates whether the modal for creating a group chat is open
   const [groupName, setGroupName] = useState(""); //the name of the group chat being created
