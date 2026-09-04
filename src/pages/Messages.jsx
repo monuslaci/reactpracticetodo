@@ -47,7 +47,7 @@ const Messages = () => {
   const [groupName, setGroupName] = useState(""); //the name of the group chat being created
   const [selectedGroupUserIds, setSelectedGroupUserIds] = useState([]); //the IDs of the users selected to be in the group chat being created
   const [rooms, setRooms] = useState([]);
-
+  const [isPageVisible, setIsPageVisible] = useState(document.visibilityState === "visible"); //indicates whether the page is currently visible or not
   const isSmallScreen = useMediaQuery({
     query: "(max-width: 1023px)"
   });
@@ -202,7 +202,7 @@ const Messages = () => {
   }, [messages]);
 
   useEffect(() => { //marks all messages in the active room as read when the active room changes or when new messages arrive
-  if (!activeRoom?.id || socketStatus !== "online") return;
+    if (!activeRoom?.id || socketStatus !== "online" || !isPageVisible) return;
 
   messages.forEach((message) => {
     const alreadyRead = message.readBy?.includes(currentUserId);
@@ -214,18 +214,38 @@ const Messages = () => {
       });
         }
       });
-    }, [messages, activeRoom?.id, currentUserId, socketStatus]);
+    }, [messages, activeRoom?.id, currentUserId, socketStatus, isPageVisible]);
 
     useEffect(() => { //loads the list of rooms when the current user changes
-      if (!currentUserId) return;
+          if (!currentUserId) return;
 
-      const loadRooms = async () => {
-        const loadedRooms = await getRooms(currentUserId);
-        setRooms(loadedRooms);
+          const loadRooms = async () => {
+            const loadedRooms = await getRooms(currentUserId);
+            setRooms(loadedRooms);
+          };
+
+          loadRooms();
+        }, [currentUserId]);
+
+    useEffect(() => { //listens for changes in the page visibility and updates the isPageVisible state accordingly, so that the app can handle notifications and other behaviors based on whether the user is actively viewing the page or not
+      const handleVisibilityChange = () => {
+        setIsPageVisible(
+          document.visibilityState === "visible"
+        );
       };
 
-      loadRooms();
-    }, [currentUserId]);
+      document.addEventListener(
+        "visibilitychange",
+        handleVisibilityChange
+      );
+
+      return () => {
+        document.removeEventListener(
+          "visibilitychange",
+          handleVisibilityChange
+        );
+      };
+    }, []);
 
   const handleSeedUsers = async () => { //seeds the database with mock users when the "Seed Users" button is clicked
     setError("");
@@ -727,7 +747,7 @@ const Messages = () => {
 
                                 {isMine && (
                                   <span className="text-[11px] text-white/75">
-                                    {isRead ? "Read" : "Sent"}
+                                    {isRead ? "Seen" : "Sent"}
                                   </span>
                                 )}
                               </div>
