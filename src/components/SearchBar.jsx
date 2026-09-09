@@ -1,7 +1,19 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {setUser} from "../features/user/UserSlice"
 
 const SearchBar = ({ page, onSearch }) => {
+    const dispatch = useDispatch();
     const [searchTerm, setSearchTerm] = useState("");
+    const user = useSelector((state) => state.user.user);
+
+    const onSetUser = () => {
+        dispatch(setUser({ name: "John Doe", email: "john.doe@example.com" }));
+         console.log("User from Redux store:", {
+                name: user?.name,
+                email: user?.email,
+            });
+    };
 
     const handleSearchSubmit = (event) => {
         event.preventDefault();
@@ -50,7 +62,7 @@ const SearchBar = ({ page, onSearch }) => {
                     <button type="button" aria-label="Settings" className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm">
                         <img src="/setting-2.svg" alt="" className="h-5 w-5" />
                     </button>
-                    <div className="flex rounded-full bg-white p-2 shadow-sm">
+                    <div onClick={() => onSetUser()}  className="flex rounded-full bg-white p-2 shadow-sm">
                         <img
                             src="/user.png"
                             alt="User"

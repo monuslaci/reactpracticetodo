@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { FaTachometerAlt , FaExclamation, FaTasks, FaCog, FaQuestionCircle, FaSignOutAlt, FaUsers, FaEnvelope, FaCalendarAlt, FaChartBar, FaLifeRing, FaFolder   } from "react-icons/fa";
 import NavBarElement from "./NavBarElement.jsx";
-
+import { useSelector } from "react-redux";
 
 
 export default function LeftNavBar() {
 const [selectedItem, setSelectedItem] = useState("Dashboard");
-
+const user = useSelector((state) => state.user.user);
 
 return(
             <div className="hidden md:flex flex-col items-center h-screen w-73.25 bg-[#F6F5F8] text-[16px]  font-[var(--font-menu)] px-5 py-10">
@@ -41,10 +41,10 @@ return(
 
                     <div className="ml-3">
                         <p className="text-sm font-semibold text-gray-800">
-                            Hannah James
+                            {user?.name ?? "User not logged in"}
                         </p>
                         <p className="text-xs text-gray-500 pl-1">
-                            abc@example.com
+                            {user?.email ?? "no email available"}
                         </p>
                     </div>
 
